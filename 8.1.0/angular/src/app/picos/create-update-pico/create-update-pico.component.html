@@ -1,0 +1,59 @@
+<form
+    class='form-horizontal'
+    autocomplete='off'
+    #createPicoModal='ngForm'
+    (ngSubmit)='save()'
+>
+    <abp-modal-header
+        [title]='isCreate == true? ("Add Pico" | localize) : ("Edit Pico" | localize)'
+        (onCloseClick)='bsModalRef.hide()'
+    ></abp-modal-header>
+    <div class='modal-body'>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='name'>
+            {{ 'Name' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='name'
+                id='name'
+                required
+                [(ngModel)]='pico.name'
+                #nameModel='ngModel'
+                #nameEl
+            />
+            <abp-validation-summary
+                [control]='nameModel'
+                [controlEl]='nameEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='unitId'>
+            {{ 'UnitId' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                class='form-control'
+                name='unitId'
+                id='unitId'
+                required
+                [(ngModel)]='pico.unitId'
+                #unitIdModel='ngModel'
+                #unitIdEl
+            />
+            <abp-validation-summary
+                [control]='unitIdModel'
+                [controlEl]='unitIdEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+    </div>
+    <abp-modal-footer
+    [cancelDisabled]='saving'
+    [saveDisabled]='!createPicoModal.form.valid || saving'
+    (onCancelClick)='bsModalRef.hide()'
+    ></abp-modal-footer>
+</form>

@@ -1,0 +1,144 @@
+<form
+    class='form-horizontal'
+    autocomplete='off'
+    #createBuildingModal='ngForm'
+    (ngSubmit)='save()'
+>
+    <abp-modal-header
+        [title]='isCreate == true? ("Add Building" | localize) : ("Edit Building" | localize)'
+        (onCloseClick)='bsModalRef.hide()'
+    ></abp-modal-header>
+    <div class='modal-body'>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='name'>
+            {{ 'Name' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='name'
+                id='name'
+                required
+                [(ngModel)]='building.name'
+                #nameModel='ngModel'
+                #nameEl
+            />
+            <abp-validation-summary
+                [control]='nameModel'
+                [controlEl]='nameEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='address'>
+            {{ 'Address' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='address'
+                id='address'
+                required
+                [(ngModel)]='building.address'
+                #addressModel='ngModel'
+                #addressEl
+            />
+            <abp-validation-summary
+                [control]='addressModel'
+                [controlEl]='addressEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='city'>
+            {{ 'City' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='city'
+                id='city'
+                required
+                [(ngModel)]='building.city'
+                #cityModel='ngModel'
+                #cityEl
+            />
+            <abp-validation-summary
+                [control]='cityModel'
+                [controlEl]='cityEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='state'>
+            {{ 'State' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='state'
+                id='state'
+                required
+                [(ngModel)]='building.state'
+                #stateModel='ngModel'
+                #stateEl
+            />
+            <abp-validation-summary
+                [control]='stateModel'
+                [controlEl]='stateEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='postcode'>
+            {{ 'Postcode' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='postcode'
+                id='postcode'
+                required
+                [(ngModel)]='building.postcode'
+                #postcodeModel='ngModel'
+                #postcodeEl
+            />
+            <abp-validation-summary
+                [control]='postcodeModel'
+                [controlEl]='postcodeEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='remark'>
+            {{ 'Remark' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='remark'
+                id='remark'
+                required
+                [(ngModel)]='building.remark'
+                #remarkModel='ngModel'
+                #remarkEl
+            />
+            <abp-validation-summary
+                [control]='remarkModel'
+                [controlEl]='remarkEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+    </div>
+    <abp-modal-footer
+    [cancelDisabled]='saving'
+    [saveDisabled]='!createBuildingModal.form.valid || saving'
+    (onCancelClick)='bsModalRef.hide()'
+    ></abp-modal-footer>
+</form>

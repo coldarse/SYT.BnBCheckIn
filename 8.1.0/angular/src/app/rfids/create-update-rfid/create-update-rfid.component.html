@@ -1,0 +1,59 @@
+<form
+    class='form-horizontal'
+    autocomplete='off'
+    #createRFIDModal='ngForm'
+    (ngSubmit)='save()'
+>
+    <abp-modal-header
+        [title]='isCreate == true? ("Add RFID" | localize) : ("Edit RFID" | localize)'
+        (onCloseClick)='bsModalRef.hide()'
+    ></abp-modal-header>
+    <div class='modal-body'>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='value'>
+            {{ 'Value' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='value'
+                id='value'
+                required
+                [(ngModel)]='rfid.value'
+                #valueModel='ngModel'
+                #valueEl
+            />
+            <abp-validation-summary
+                [control]='valueModel'
+                [controlEl]='valueEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='unitId'>
+            {{ 'UnitId' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                class='form-control'
+                name='unitId'
+                id='unitId'
+                required
+                [(ngModel)]='rfid.unitId'
+                #unitIdModel='ngModel'
+                #unitIdEl
+            />
+            <abp-validation-summary
+                [control]='unitIdModel'
+                [controlEl]='unitIdEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+    </div>
+    <abp-modal-footer
+    [cancelDisabled]='saving'
+    [saveDisabled]='!createRFIDModal.form.valid || saving'
+    (onCancelClick)='bsModalRef.hide()'
+    ></abp-modal-footer>
+</form>

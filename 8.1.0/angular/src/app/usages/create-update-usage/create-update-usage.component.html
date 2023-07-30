@@ -1,0 +1,161 @@
+<form
+    class='form-horizontal'
+    autocomplete='off'
+    #createUsageModal='ngForm'
+    (ngSubmit)='save()'
+>
+    <abp-modal-header
+        [title]='isCreate == true? ("Add Usage" | localize) : ("Edit Usage" | localize)'
+        (onCloseClick)='bsModalRef.hide()'
+    ></abp-modal-header>
+    <div class='modal-body'>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='unit'>
+            {{ 'Unit' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                class='form-control'
+                name='unit'
+                id='unit'
+                required
+                [(ngModel)]='usage.unit'
+                #unitModel='ngModel'
+                #unitEl
+            />
+            <abp-validation-summary
+                [control]='unitModel'
+                [controlEl]='unitEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='pico'>
+            {{ 'Pico' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                class='form-control'
+                name='pico'
+                id='pico'
+                required
+                [(ngModel)]='usage.pico'
+                #picoModel='ngModel'
+                #picoEl
+            />
+            <abp-validation-summary
+                [control]='picoModel'
+                [controlEl]='picoEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='rFID'>
+            {{ 'RFID' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                class='form-control'
+                name='rFID'
+                id='rFID'
+                required
+                [(ngModel)]='usage.rFID'
+                #rFIDModel='ngModel'
+                #rFIDEl
+            />
+            <abp-validation-summary
+                [control]='rFIDModel'
+                [controlEl]='rFIDEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='building'>
+            {{ 'Building' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                class='form-control'
+                name='building'
+                id='building'
+                required
+                [(ngModel)]='usage.building'
+                #buildingModel='ngModel'
+                #buildingEl
+            />
+            <abp-validation-summary
+                [control]='buildingModel'
+                [controlEl]='buildingEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='startTime'>
+            {{ 'StartTime' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='date'
+                class='form-control'
+                name='startTime'
+                id='startTime'
+                required
+                [(ngModel)]='usage.startTime'
+                #startTimeModel='ngModel'
+                #startTimeEl
+            />
+            <abp-validation-summary
+                [control]='startTimeModel'
+                [controlEl]='startTimeEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='endTime'>
+            {{ 'EndTime' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='date'
+                class='form-control'
+                name='endTime'
+                id='endTime'
+                required
+                [(ngModel)]='usage.endTime'
+                #endTimeModel='ngModel'
+                #endTimeEl
+            />
+            <abp-validation-summary
+                [control]='endTimeModel'
+                [controlEl]='endTimeEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='checkInRef'>
+            {{ 'CheckInRef' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='checkInRef'
+                id='checkInRef'
+                required
+                [(ngModel)]='usage.checkInRef'
+                #checkInRefModel='ngModel'
+                #checkInRefEl
+            />
+            <abp-validation-summary
+                [control]='checkInRefModel'
+                [controlEl]='checkInRefEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+    </div>
+    <abp-modal-footer
+    [cancelDisabled]='saving'
+    [saveDisabled]='!createUsageModal.form.valid || saving'
+    (onCancelClick)='bsModalRef.hide()'
+    ></abp-modal-footer>
+</form>

@@ -1,0 +1,102 @@
+<form
+    class='form-horizontal'
+    autocomplete='off'
+    #createUnitModal='ngForm'
+    (ngSubmit)='save()'
+>
+    <abp-modal-header
+        [title]='isCreate == true? ("Add Unit" | localize) : ("Edit Unit" | localize)'
+        (onCloseClick)='bsModalRef.hide()'
+    ></abp-modal-header>
+    <div class='modal-body'>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='buildingId'>
+            {{ 'Building' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='buildingId'
+                id='buildingId'
+                required
+                [(ngModel)]='unit.buildingId'
+                #buildingIdModel='ngModel'
+                #buildingIdEl
+            />
+            <abp-validation-summary
+                [control]='buildingIdModel'
+                [controlEl]='buildingIdEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='unitNo'>
+            {{ 'UnitNo' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='unitNo'
+                id='unitNo'
+                required
+                [(ngModel)]='unit.unitNo'
+                #unitNoModel='ngModel'
+                #unitNoEl
+            />
+            <abp-validation-summary
+                [control]='unitNoModel'
+                [controlEl]='unitNoEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='status'>
+            {{ 'Status' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='status'
+                id='status'
+                required
+                [(ngModel)]='unit.status'
+                #statusModel='ngModel'
+                #statusEl
+            />
+            <abp-validation-summary
+                [control]='statusModel'
+                [controlEl]='statusEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='remark'>
+            {{ 'Remark' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <input
+                type='text'
+                class='form-control'
+                name='remark'
+                id='remark'
+                required
+                [(ngModel)]='unit.remark'
+                #remarkModel='ngModel'
+                #remarkEl
+            />
+            <abp-validation-summary
+                [control]='remarkModel'
+                [controlEl]='remarkEl'
+            ></abp-validation-summary>
+            </div>
+        </div>
+    </div>
+    <abp-modal-footer
+    [cancelDisabled]='saving'
+    [saveDisabled]='!createUnitModal.form.valid || saving'
+    (onCancelClick)='bsModalRef.hide()'
+    ></abp-modal-footer>
+</form>
