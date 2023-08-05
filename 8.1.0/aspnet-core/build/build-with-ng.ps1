@@ -2,9 +2,9 @@ echo " Welcome to docker build"
 echo ""
 echo ""
 
-$ABP_HOST="abp/host"
+$ABP_HOST="dannychen98/bnbcheckin_api:v0.6"
 $ABP_HOST_DOCKERFILE_PATH="src/SYT.BnBCheckIn.Web.Host/Dockerfile"
-$ABP_NG="abp/ng"
+$ABP_NG="dannychen98/bnbcheckin_ms:v0.6"
 
 cd ..
 echo " Building docker image $ABP_HOST..."
