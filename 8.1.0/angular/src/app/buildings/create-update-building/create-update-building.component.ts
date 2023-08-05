@@ -14,7 +14,9 @@ export class CreateUpdateBuildingComponent extends AppComponentBase
 
   saving = false;
   isCreate = true;
-  building?: BuildingDto = {} as BuildingDto;
+  building?: BuildingDto = {
+    remark: '-'
+  } as BuildingDto;
 
   @Output() onSave = new EventEmitter<any>();
 

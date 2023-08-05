@@ -11,17 +11,22 @@ using SYT.BnBCheckIn.Picos.Dto;
 
 namespace SYT.BnBCheckIn.Picos
 {
-  public class PicoAppService : CrudAppService<Pico, PicoDto, Guid, PagedPicoResultRequestDto>
-  {
+    public class PicoAppService : CrudAppService<Pico, PicoDto, Guid, PagedPicoResultRequestDto>
+    {
 
-      public PicoAppService(IRepository<Pico, Guid> repository) : base(repository)
-      {
-      }
-      protected override IQueryable<Pico> CreateFilteredQuery(PagedPicoResultRequestDto input)
-      {
-          return (IQueryable<Pico>)Repository.GetAllIncluding()
+        public PicoAppService(IRepository<Pico, Guid> repository) : base(repository)
+        {
+        }
+        protected override IQueryable<Pico> CreateFilteredQuery(PagedPicoResultRequestDto input)
+        {
+            return (IQueryable<Pico>)Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
-                  x.Name.Contains(input.Keyword));
-      }
-  }
+                    x.Name.Contains(input.Keyword));
+        }
+
+        public async Task<Pico> getPico(Guid id)
+        {
+            return await Repository.FirstOrDefaultAsync(x => x.Id == id);
+        }
+    }
 }

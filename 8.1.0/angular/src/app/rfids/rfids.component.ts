@@ -5,6 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { RFIDDto } from '@shared/service-proxies/rfids/model'
 import { RFIDService } from '@shared/service-proxies/rfids/rfid.service'
 import { CreateUpdateRFIDComponent } from '../rfids/create-update-rfid/create-update-rfid.component'
+import { UnitService } from '@shared/service-proxies/units/unit.service';
 
 class PagedRFIDSRequestDto extends PagedRequestDto{
   keyword: string
@@ -20,9 +21,12 @@ export class RFIDSComponent extends PagedListingComponentBase<RFIDDto> {
   keyword = '';
   rfids: any[] = [];
 
+  units: any[] = [];
+
   constructor(
     injector: Injector,
     private _rfidService: RFIDService,
+    private _unitService: UnitService,
     private _modalService: BsModalService
   ){
     super(injector);
@@ -43,6 +47,9 @@ export class RFIDSComponent extends PagedListingComponentBase<RFIDDto> {
         CreateUpdateRFIDComponent,
         {
           class: 'modal-lg',
+          initialState: {
+            units: this.units,
+          },
         }
       );
     }
@@ -52,7 +59,8 @@ export class RFIDSComponent extends PagedListingComponentBase<RFIDDto> {
         {
           class: 'modal-lg',
           initialState: {
-            rfid: entity
+            rfid: entity,
+            units: this.units,
           },
         }
       );
@@ -103,16 +111,21 @@ export class RFIDSComponent extends PagedListingComponentBase<RFIDDto> {
     )
     .subscribe((result: any) => {
       this.rfids = [];
+      this._unitService.getAllUnits().subscribe((results: any) => {
+        this.units = results.result;
         result.result.items.forEach((element: RFIDDto) => {
+          let unit = results.result.find(x => x.id == element.unitId);
 
           let tempRFID = {
             id: element.id,
+            unit: unit.unitNo,
             value: element.value,
             unitId: element.unitId,
           }
 
           this.rfids.push(tempRFID);
         });
+      });
       this.showPaging(result, pageNumber);
     });
   }

@@ -34,5 +34,10 @@ namespace SYT.BnBCheckIn.Buildings
             List<Building> temp = await Repository.GetAllListAsync();
             return temp;
         }
+
+        public async Task<Building> getBuilding(Guid id)
+        {
+            return await Repository.FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

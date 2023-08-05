@@ -49,7 +49,7 @@
                             <thead class='bg-light'>
                             <tr>
                                 <th>{{ 'Value' | localize }}</th>
-                                <th>{{ 'UnitId' | localize }}</th>
+                                <th>{{ 'Unit' | localize }}</th>
                                 <th style='width: 310px;' *ngIf='isButtonVisible("Edit") && isButtonVisible("Delete")'>{{ 'Actions' | localize }}</th>
                             </tr>
                             </thead>
@@ -67,7 +67,7 @@
                 '
                             >
                                 <td>{{ rfid.value }}</td>
-                                <td>{{ rfid.unitId }}</td>
+                                <td>{{ rfid.unit }}</td>
                                 <td *ngIf='isButtonVisible("Edit") || isButtonVisible("Delete")'>
                                     <button
                                             type='button'

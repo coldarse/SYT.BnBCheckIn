@@ -20,6 +20,7 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
 
   keyword = '';
   units: any[] = [];
+  buildings: any[] = [];
 
   constructor(
     injector: Injector,
@@ -45,6 +46,9 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
         CreateUpdateUnitComponent,
         {
           class: 'modal-lg',
+          initialState: {
+            buildings: this.buildings,
+          }
         }
       );
     }
@@ -54,7 +58,8 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
         {
           class: 'modal-lg',
           initialState: {
-            unit: entity
+            unit: entity,
+            buildings: this.buildings,
           },
         }
       );
@@ -106,7 +111,7 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
     .subscribe((result: any) => {
       this.units = [];
       this._buildingService.getAllBuildings().subscribe((results: any) => {
-
+        this.buildings = results.result;
         result.result.items.forEach((element: UnitDto) => {
           let building = results.result.find(x => x.id == element.buildingId);
 

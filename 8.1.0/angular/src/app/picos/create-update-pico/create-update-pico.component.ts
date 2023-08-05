@@ -16,6 +16,8 @@ export class CreateUpdatePicoComponent extends AppComponentBase
   isCreate = true;
   pico?: PicoDto = {} as PicoDto;
 
+  units: any[];
+
   @Output() onSave = new EventEmitter<any>();
 
   constructor(
@@ -30,6 +32,10 @@ export class CreateUpdatePicoComponent extends AppComponentBase
     if(this.pico.id != undefined){
       this.isCreate = false;
     }
+  }
+
+  selectUnit(event: any){
+    this.pico.unitId = event.target.value;
   }
 
   save(): void {

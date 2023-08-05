@@ -14,7 +14,7 @@
             {{ 'Building' | localize }}
             </label>
             <div class='col-md-9'>
-            <input
+            <!-- <input
                 type='text'
                 class='form-control'
                 name='buildingId'
@@ -27,7 +27,22 @@
             <abp-validation-summary
                 [control]='buildingIdModel'
                 [controlEl]='buildingIdEl'
-            ></abp-validation-summary>
+            ></abp-validation-summary> -->
+            <select
+            id="buildingId"
+            name="buildingId"
+            class="form-select form-control"
+            (change)="selectBuilding($event)"
+            [(ngModel)]="unit.buildingId"
+            >
+            <option value=''></option>
+            <option
+              *ngFor="let option of buildings"
+              value="{{ option.id }}"
+            >
+              {{ option.name | localize }}
+            </option>
+            </select>
             </div>
         </div>
         <div class='form-group row required'>
@@ -56,7 +71,7 @@
             {{ 'Status' | localize }}
             </label>
             <div class='col-md-9'>
-            <input
+            <!-- <input
                 type='text'
                 class='form-control'
                 name='status'
@@ -69,7 +84,19 @@
             <abp-validation-summary
                 [control]='statusModel'
                 [controlEl]='statusEl'
-            ></abp-validation-summary>
+            ></abp-validation-summary> -->
+            <select
+            id="status"
+            name="status"
+            class="form-select form-control"
+            (change)="selectStatus($event)"
+            [(ngModel)]="unit.status"
+            >
+            <option value='Vacant'>Vacant</option>
+            <option value='Occupied'>Occupied</option>
+            <option value='Cleaning'>Cleaning</option>
+            <option value='Unavailable'>Unavailable</option>
+            </select>
             </div>
         </div>
         <div class='form-group row required'>
@@ -83,7 +110,7 @@
                 name='remark'
                 id='remark'
                 required
-                [(ngModel)]='unit.remark'
+                [(ngModel)]="unit.remark"
                 #remarkModel='ngModel'
                 #remarkEl
             />

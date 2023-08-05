@@ -49,7 +49,7 @@
                             <thead class='bg-light'>
                             <tr>
                                 <th>{{ 'Name' | localize }}</th>
-                                <th>{{ 'UnitId' | localize }}</th>
+                                <th>{{ 'Unit' | localize }}</th>
                                 <th style='width: 310px;' *ngIf='isButtonVisible("Edit") && isButtonVisible("Delete")'>{{ 'Actions' | localize }}</th>
                             </tr>
                             </thead>
@@ -67,7 +67,7 @@
                 '
                             >
                                 <td>{{ pico.name }}</td>
-                                <td>{{ pico.unitId }}</td>
+                                <td>{{ pico.unit }}</td>
                                 <td *ngIf='isButtonVisible("Edit") || isButtonVisible("Delete")'>
                                     <button
                                             type='button'

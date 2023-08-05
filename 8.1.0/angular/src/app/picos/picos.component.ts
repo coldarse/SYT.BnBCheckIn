@@ -21,6 +21,8 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
   keyword = '';
   picos: any[] = [];
 
+  units: any[] = [];
+
   constructor(
     injector: Injector,
     private _picoService: PicoService,
@@ -45,6 +47,9 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
         CreateUpdatePicoComponent,
         {
           class: 'modal-lg',
+          initialState: {
+            units: this.units,
+          },
         }
       );
     }
@@ -54,7 +59,8 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
         {
           class: 'modal-lg',
           initialState: {
-            pico: entity
+            pico: entity,
+            units: this.units,
           },
         }
       );
@@ -106,12 +112,15 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
     .subscribe((result: any) => {
       this.picos = [];
       this._unitService.getAllUnits().subscribe((results: any) => {
+        this.units = results.result;
         result.result.items.forEach((element: PicoDto) => {
-          let item1 = results.result.find(x => x.id === 1);
+          let unit = results.result.find(x => x.id == element.unitId);
+
           let tempPico = {
             id: element.id,
-            name: element.name,
+            unit: unit.unitNo,
             unitId: element.unitId,
+            name: element.name,
           }
 
           this.picos.push(tempPico);

@@ -14,9 +14,11 @@ export class CreateUpdateUnitComponent extends AppComponentBase
 
   saving = false;
   isCreate = true;
-  unit?: UnitDto = {} as UnitDto;
+  unit?: UnitDto = {
+    remark: '-'
+  } as UnitDto;
 
-  buildings: any = [];
+  buildings: any[];
 
   @Output() onSave = new EventEmitter<any>();
 
@@ -32,6 +34,14 @@ export class CreateUpdateUnitComponent extends AppComponentBase
     if(this.unit.id != undefined){
       this.isCreate = false;
     }
+  }
+
+  selectBuilding(event: any){
+    this.unit.buildingId = event.target.value;
+  }
+  
+  selectStatus(event: any){
+    this.unit.status = event.target.value;
   }
 
   save(): void {

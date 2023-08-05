@@ -16,6 +16,8 @@ export class CreateUpdateRFIDComponent extends AppComponentBase
   isCreate = true;
   rfid?: RFIDDto = {} as RFIDDto;
 
+  units: any[];
+
   @Output() onSave = new EventEmitter<any>();
 
   constructor(
@@ -30,6 +32,10 @@ export class CreateUpdateRFIDComponent extends AppComponentBase
     if(this.rfid.id != undefined){
       this.isCreate = false;
     }
+  }
+
+  selectUnit(event: any){
+    this.rfid.unitId = event.target.value;
   }
 
   save(): void {

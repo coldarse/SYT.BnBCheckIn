@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SYT.BnBCheckIn.EntityFrameworkCore;
 
@@ -10,9 +11,11 @@ using SYT.BnBCheckIn.EntityFrameworkCore;
 namespace SYT.BnBCheckIn.Migrations
 {
     [DbContext(typeof(BnBCheckInDbContext))]
-    partial class BnBCheckInDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230730070605_Changed_Usage_Elements_Type")]
+    partial class Changed_Usage_Elements_Type
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
