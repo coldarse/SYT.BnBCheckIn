@@ -4,13 +4,13 @@ services:
 
   bnbcheckin_api:
     build: ./
-    image: dannychen98/bnbcheckin_api:v0.6
+    image: dannychen98/bnbcheckin_api:v0.8
     environment:
       ASPNETCORE_ENVIRONMENT: "Staging"
       ConnectionStrings__Default: "server=95.217.117.206;port=3306;database=BnbCheckInDb;uid=sammy;pwd=Syt@1234;"
-      App__ServerRootAddress: "https://95.217.117.206:44311/"
-      App__ClientRootAddress: "https://95.217.117.206:4200/"
-      App__CorsOrigins: "https://95.217.117.206:4200"
+      App__ServerRootAddress: "http://95.217.117.206:44311/"
+      App__ClientRootAddress: "http://95.217.117.206:4200/"
+      App__CorsOrigins: "http://95.217.117.206:4200"
       TZ: "America/Toronto"
       Kestrel__Endpoints__Http__Url: "http://+:80"
     ports:
@@ -21,6 +21,6 @@ services:
 
   bncheckin_ms:
     build: ./
-    image: dannychen98/bnbcheckin_ms:v0.6
+    image: dannychen98/bnbcheckin_ms:v0.8
     ports:
       - "4200:80"
