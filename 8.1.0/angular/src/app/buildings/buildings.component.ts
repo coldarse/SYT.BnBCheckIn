@@ -117,7 +117,7 @@ export class BuildingsComponent extends PagedListingComponentBase<BuildingDto> {
 
           this.buildings.push(tempBuilding);
         });
-      this.showPaging(result, pageNumber);
+      this.showPaging(result.result, pageNumber);
     });
   }
 }

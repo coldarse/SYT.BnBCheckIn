@@ -118,7 +118,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
 
           this.usages.push(tempUsage);
         });
-      this.showPaging(result, pageNumber);
+      this.showPaging(result.result, pageNumber);
     });
   }
 }

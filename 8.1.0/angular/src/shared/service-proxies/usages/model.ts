@@ -4,7 +4,7 @@ import type { PagedAndSortedResultRequestDto, EntityDto } from '@abp/ng.core';
 export interface UsageDto extends EntityDto<number> {
     unit: string;
     pico: string;
-    rFID: string;
+    rfid: string;
     building: string;
     startTime: string;
     endTime: string;
@@ -15,7 +15,7 @@ export interface PagedUsageResultRequestDto extends PagedAndSortedResultRequestD
     keyword?: string;
     unit?: string;
     pico?: string;
-    rFID?: string;
+    rfid?: string;
     building?: string;
     startTime?: string;
     endTime?: string;

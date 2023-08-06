@@ -127,7 +127,7 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
         });
       });
 
-      this.showPaging(result, pageNumber);
+      this.showPaging(result.result, pageNumber);
     });
   }
 }

@@ -75,8 +75,8 @@
                                 <td>{{ usage.pico }}</td>
                                 <td>{{ usage.rFID }}</td>
                                 <td>{{ usage.building }}</td>
-                                <td>{{ usage.startTime }}</td>
-                                <td>{{ usage.endTime }}</td>
+                                <td>{{ usage.startTime | date:'medium' }}</td>
+                                <td>{{ (usage.endTime | date:'medium') == 'Jan 1, 1, 12:00:00 AM' ? '-' : (usage.endTime | date:'medium') }}</td>
                                 <td>{{ usage.checkInRef }}</td>
                                 <td *ngIf='isButtonVisible("Edit") || isButtonVisible("Delete")'>
                                     <button

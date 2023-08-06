@@ -126,7 +126,7 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
 
           this.units.push(tempUnit);
         });
-        this.showPaging(result, pageNumber);
+        this.showPaging(result.result, pageNumber);
       });
     });
   }
