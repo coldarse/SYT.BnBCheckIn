@@ -24,9 +24,12 @@ namespace SYT.BnBCheckIn.Usages
                     x.CheckInRef.Contains(input.Keyword));
         }
 
-        public async Task<Usage> getUsage(Guid id)
+        public async Task<Usage> endUsage(Guid id)
         {
-            return await Repository.FirstOrDefaultAsync(x => x.Id == id);
+            var usage = await Repository.FirstOrDefaultAsync(x => x.Id == id);
+            usage.EndTime = DateTime.UtcNow;
+            Repository.Update(usage);
+            return usage;
         }
     }
 }
