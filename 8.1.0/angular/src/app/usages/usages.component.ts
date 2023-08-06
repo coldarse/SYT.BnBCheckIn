@@ -109,7 +109,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
             id: element.id,
             unit: element.unit,
             pico: element.pico,
-            rFID: element.rFID,
+            rFID: element.rfid,
             building: element.building,
             startTime: element.startTime,
             endTime: element.endTime,
@@ -118,7 +118,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
 
           this.usages.push(tempUsage);
         });
-      this.showPaging(result, pageNumber);
+      this.showPaging(result.result, pageNumber);
     });
   }
 }
