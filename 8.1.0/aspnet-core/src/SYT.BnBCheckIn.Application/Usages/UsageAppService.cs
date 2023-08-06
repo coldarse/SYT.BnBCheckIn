@@ -11,17 +11,22 @@ using SYT.BnBCheckIn.Usages.Dto;
 
 namespace SYT.BnBCheckIn.Usages
 {
-  public class UsageAppService : CrudAppService<Usage, UsageDto, Guid, PagedUsageResultRequestDto>
-  {
+    public class UsageAppService : CrudAppService<Usage, UsageDto, Guid, PagedUsageResultRequestDto>
+    {
 
-      public UsageAppService(IRepository<Usage, Guid> repository) : base(repository)
-      {
-      }
-      protected override IQueryable<Usage> CreateFilteredQuery(PagedUsageResultRequestDto input)
-      {
-          return (IQueryable<Usage>)Repository.GetAllIncluding()
+        public UsageAppService(IRepository<Usage, Guid> repository) : base(repository)
+        {
+        }
+        protected override IQueryable<Usage> CreateFilteredQuery(PagedUsageResultRequestDto input)
+        {
+            return (IQueryable<Usage>)Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
-                  x.CheckInRef.Contains(input.Keyword));
-      }
-  }
+                    x.CheckInRef.Contains(input.Keyword));
+        }
+
+        public async Task<Usage> getUsage(Guid id)
+        {
+            return await Repository.FirstOrDefaultAsync(x => x.Id == id);
+        }
+    }
 }

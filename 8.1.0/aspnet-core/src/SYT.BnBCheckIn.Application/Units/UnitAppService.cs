@@ -72,5 +72,21 @@ namespace SYT.BnBCheckIn.Units
 
             return verify;
         }
+
+        public async void UpdateUsage(Guid usageid)
+        {
+            var usage = await _usageAppService.getUsage(usageid);
+
+            Usages.Dto.UsageDto usageDto = new Usages.Dto.UsageDto();
+            usageDto.Unit = usage.Unit;
+            usageDto.Pico = usage.Pico;
+            usageDto.RFID = usage.RFID;
+            usageDto.Building = usage.Building;
+            usageDto.StartTime = usage.StartTime;
+            usageDto.EndTime = DateTime.UtcNow;
+            usageDto.CheckInRef = usage.CheckInRef;
+
+            _usageAppService.Update(usageDto);
+        }
     }
 }
