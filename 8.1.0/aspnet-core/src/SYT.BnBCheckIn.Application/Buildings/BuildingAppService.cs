@@ -8,11 +8,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SYT.BnBCheckIn.Buildings.Dto;
+using SYT.BnBCheckIn.Units;
+using SYT.BnBCheckIn.Units.Dto;
+using System.Net.NetworkInformation;
 
 namespace SYT.BnBCheckIn.Buildings
 {
     public class BuildingAppService : CrudAppService<Building, BuildingDto, Guid, PagedBuildingResultRequestDto>
     {
+
 
         public BuildingAppService(IRepository<Building, Guid> repository) : base(repository)
         {
@@ -39,5 +43,6 @@ namespace SYT.BnBCheckIn.Buildings
         {
             return await Repository.FirstOrDefaultAsync(x => x.Id == id);
         }
+
     }
 }

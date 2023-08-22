@@ -112,7 +112,7 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
     .subscribe((result: any) => {
       this.picos = [];
       this._unitService.getAllUnits().subscribe((results: any) => {
-        this.units = results.result;
+        this.units = results.result.filter((obj) => {return !obj.unitNo.includes('Master')});
         result.result.items.forEach((element: PicoDto) => {
           let unit = results.result.find(x => x.id == element.unitId);
 

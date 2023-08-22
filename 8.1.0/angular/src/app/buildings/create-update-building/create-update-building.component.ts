@@ -3,6 +3,7 @@ import { AppComponentBase } from '../../../shared/app-component-base';
 import { BuildingDto } from '../../../shared/service-proxies/buildings/model';
 import { BuildingService } from '../../../shared/service-proxies/buildings/building.service';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { UnitService } from '@shared/service-proxies/units/unit.service';
 
 @Component({
   selector: 'app-create-update-building',
@@ -23,6 +24,7 @@ export class CreateUpdateBuildingComponent extends AppComponentBase
   constructor(
     injector: Injector,
     public _buildingService: BuildingService,
+    public _unitService: UnitService,
     public bsModalRef: BsModalRef
   ) {
     super(injector);
@@ -50,16 +52,24 @@ export class CreateUpdateBuildingComponent extends AppComponentBase
       );
     }
     else{
-      this._buildingService.create(this.building).subscribe(
-        () => {
-          this.notify.info(this.l('SavedSuccessfully'));
-          this.bsModalRef.hide();
-          this.onSave.emit();
-        },
-        () => {
-          this.saving = false;
+      this._buildingService.create(this.building).subscribe((data: any) => {
+        const unit = {
+          buildingId: data.result.id,
+          unitNo: data.result.name + ' Master',
+          status: 'Vacant',
+          remark: '-'
         }
-      );
+        this._unitService.create(unit).subscribe(
+          () => {
+            this.notify.info(this.l('SavedSuccessfully'));
+            this.bsModalRef.hide();
+            this.onSave.emit();
+          },
+          () => {
+            this.saving = false;
+          }
+        )
+      });
     }
 
   }

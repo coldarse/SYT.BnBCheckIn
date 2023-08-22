@@ -31,11 +31,14 @@ namespace SYT.BnBCheckIn.Units
         }
         protected override IQueryable<Unit> CreateFilteredQuery(PagedUnitResultRequestDto input)
         {
-            return (IQueryable<Unit>)Repository.GetAllIncluding()
+            IQueryable<Unit> units = (IQueryable<Unit>)Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
                     x.UnitNo.Contains(input.Keyword) ||
                     x.Status.Contains(input.Keyword) ||
                     x.Remark.Contains(input.Keyword));
+
+            units = units.Where(x => !x.UnitNo.ToLower().Contains("master"));
+            return units;
         }
 
         public async Task<List<Unit>> GetAllUnits()
@@ -48,8 +51,23 @@ namespace SYT.BnBCheckIn.Units
         {
             VerifyDto verify = new VerifyDto();
 
-            var pico = await _picoAppService.getPico(input.PicoId);
             var rfid = await _rFIDAppService.getRFID(input.RFID);
+
+            Unit tempunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));
+
+            if (tempunit is null) return verify;
+
+            List<string> rfids = _rFIDAppService.getUnitRFIDs(tempunit.Id);
+
+            if (tempunit.UnitNo.ToLower().Contains("master"))
+            {
+                verify.Validity = true;
+                verify.UnitRFIDs = rfids;
+
+                return verify;
+            }
+
+            var pico = await _picoAppService.getPico(input.PicoId);
 
             if (pico.UnitId != rfid.UnitId) return verify;
 
@@ -69,6 +87,7 @@ namespace SYT.BnBCheckIn.Units
 
             verify.Validity = true;
             verify.UsageId = usage.Id;
+            verify.UnitRFIDs = rfids;
 
             return verify;
         }

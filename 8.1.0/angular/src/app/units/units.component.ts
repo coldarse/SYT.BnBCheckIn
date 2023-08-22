@@ -26,7 +26,7 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
     injector: Injector,
     private _unitService: UnitService,
     private _buildingService: BuildingService,
-    private _modalService: BsModalService
+    private _modalService: BsModalService,
   ){
     super(injector);
   }
