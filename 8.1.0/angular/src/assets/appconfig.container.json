@@ -1,6 +1,6 @@
 {
-  "remoteServiceBaseUrl": "http://95.217.117.206:44311",
-  "appBaseUrl": "http://95.217.117.206:4200",
+  "remoteServiceBaseUrl": "https://naibnb.sytsolutions.com/naibnbapi",
+  "appBaseUrl": "https://naibnb.sytsolutions.com/naibnb",
   "localeMappings": [
     {
       "from": "pt-BR",
