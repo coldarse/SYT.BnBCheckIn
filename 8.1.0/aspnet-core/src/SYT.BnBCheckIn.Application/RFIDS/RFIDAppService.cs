@@ -40,5 +40,25 @@ namespace SYT.BnBCheckIn.RFIDS
 
             return unitrfids;
         }
+
+        public async Task<bool> registerRFID(regRFID input)
+        {
+            RFID temp = new RFID()
+            {
+                Value = input.Value,
+                UnitId = input.UnitId
+            };
+
+            try
+            {
+                var rfid = await Repository.InsertAsync(temp);
+                if (rfid is not null) return true;
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

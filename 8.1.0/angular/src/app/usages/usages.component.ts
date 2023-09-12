@@ -19,6 +19,83 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
 
   keyword = '';
   usages: any[] = [];
+  view: any[] = [800, 400];
+  
+
+  usage: any[] = [];
+
+  // options
+  showXAxis = true;
+  showYAxis = true;
+  gradient = false;
+  showLegend = false;
+  showXAxisLabel = true;
+  xAxisLabel = 'Date';
+  showYAxisLabel = true;
+  yAxisLabel = 'Hours';
+
+  colorScheme = {
+    domain: ['#116cb7', '#AAAAAA']
+  };
+
+  single: any[] = [
+    {
+      "name": "18th Aug",
+      "value": 5
+    },
+    {
+      "name": "19th Aug",
+      "value": 8
+    },
+    {
+      "name": "20th Aug",
+      "value": 3
+    },
+    {
+      "name": "21st Aug",
+      "value": 7
+    },
+    {
+      "name": "22nd Aug",
+      "value": 18
+    },
+    {
+      "name": "23rd Aug",
+      "value": 17
+    },
+    {
+      "name": "24th Aug",
+      "value": 10
+    },
+    {
+      "name": "25th Aug",
+      "value": 4
+    },
+    {
+      "name": "26th Aug",
+      "value": 0
+    },
+    {
+      "name": "27th Aug",
+      "value": 2
+    },
+    {
+      "name": "28th Aug",
+      "value": 5
+    },
+    {
+      "name": "29th Aug",
+      "value": 3
+    },
+    {
+      "name": "30th Aug",
+      "value": 14
+    },
+    {
+      "name": "31st Aug",
+      "value": 9
+    },
+  ];
 
   constructor(
     injector: Injector,
@@ -118,7 +195,22 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
 
           this.usages.push(tempUsage);
         });
+        this._usageService
+        .getDayUsage().pipe(
+          finalize(() => {
+            finishedCallback();
+          })
+        ).subscribe((result: any) => {
+          this.usage = result.result;
+          this.single = result.result[0].usages;
+        });
       this.showPaging(result.result, pageNumber);
     });
+    
+  }
+
+  selected(event: any){
+    let index = this.usage.findIndex(x => x.unit == event.target.value);
+    this.single = this.usage[index].usages;
   }
 }
