@@ -43,6 +43,10 @@ namespace SYT.BnBCheckIn.RFIDS
 
         public async Task<bool> registerRFID(regRFID input)
         {
+            var temp_rfid = await Repository.FirstOrDefaultAsync(x => x.Value == input.Value);
+
+            if (temp_rfid is not null) return false;
+
             RFID temp = new RFID()
             {
                 Value = input.Value,
