@@ -19,9 +19,9 @@ namespace SYT.BnBCheckIn.RFIDS
         }
         protected override IQueryable<RFID> CreateFilteredQuery(PagedRFIDResultRequestDto input)
         {
-            return (IQueryable<RFID>)Repository.GetAllIncluding()
+            return Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
-                    x.Value.Contains(input.Keyword));
+                    x.Value.Contains(input.Keyword)).AsQueryable();
         }
 
         public async Task<RFID> getRFID(string value)

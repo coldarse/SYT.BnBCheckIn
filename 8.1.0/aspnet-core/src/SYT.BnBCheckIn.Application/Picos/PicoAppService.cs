@@ -19,9 +19,9 @@ namespace SYT.BnBCheckIn.Picos
         }
         protected override IQueryable<Pico> CreateFilteredQuery(PagedPicoResultRequestDto input)
         {
-            return (IQueryable<Pico>)Repository.GetAllIncluding()
+            return Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
-                    x.Name.Contains(input.Keyword));
+                    x.Name.Contains(input.Keyword)).AsQueryable();
         }
 
         public async Task<Pico> getPico(Guid id)

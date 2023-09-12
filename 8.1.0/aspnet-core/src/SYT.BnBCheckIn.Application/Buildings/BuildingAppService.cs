@@ -23,14 +23,14 @@ namespace SYT.BnBCheckIn.Buildings
         }
         protected override IQueryable<Building> CreateFilteredQuery(PagedBuildingResultRequestDto input)
         {
-            return (IQueryable<Building>)Repository.GetAllIncluding()
+            return Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
                     x.Name.Contains(input.Keyword) ||
                     x.Address.Contains(input.Keyword) ||
                     x.City.Contains(input.Keyword) ||
                     x.State.Contains(input.Keyword) ||
                     x.Postcode.Contains(input.Keyword) ||
-                    x.Remark.Contains(input.Keyword));
+                    x.Remark.Contains(input.Keyword)).AsQueryable();
         }
 
         public async Task<List<Building>> GetAllBuildings()

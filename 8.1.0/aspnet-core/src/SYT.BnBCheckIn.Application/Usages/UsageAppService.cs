@@ -19,9 +19,9 @@ namespace SYT.BnBCheckIn.Usages
         }
         protected override IQueryable<Usage> CreateFilteredQuery(PagedUsageResultRequestDto input)
         {
-            return (IQueryable<Usage>)Repository.GetAllIncluding()
+            return Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
-                    x.CheckInRef.Contains(input.Keyword));
+                    x.CheckInRef.Contains(input.Keyword)).AsQueryable();
         }
 
         public async Task<Usage> endUsage(Guid id)

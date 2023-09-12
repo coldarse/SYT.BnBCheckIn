@@ -31,11 +31,11 @@ namespace SYT.BnBCheckIn.Units
         }
         protected override IQueryable<Unit> CreateFilteredQuery(PagedUnitResultRequestDto input)
         {
-            IQueryable<Unit> units = (IQueryable<Unit>)Repository.GetAllIncluding()
+            IQueryable<Unit> units = Repository.GetAllIncluding()
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
                     x.UnitNo.Contains(input.Keyword) ||
                     x.Status.Contains(input.Keyword) ||
-                    x.Remark.Contains(input.Keyword));
+                    x.Remark.Contains(input.Keyword)).AsQueryable();
 
             units = units.Where(x => !x.UnitNo.ToLower().Contains("master"));
             return units;
