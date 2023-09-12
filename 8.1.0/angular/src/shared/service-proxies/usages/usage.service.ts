@@ -102,4 +102,15 @@ export class UsageService {
             catchError(this.handleError),
         )
     }
+
+    //Usage Report
+    getDayUsage(){
+        return this.http.get(
+            this.url + "/api/services/app/Usage/GetDayUsage",
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
 }
