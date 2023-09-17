@@ -24,14 +24,29 @@ namespace SYT.BnBCheckIn.Usages.Dto
 
 	public class DayUsageWithUnits
 	{
-		public string Unit { get; set; }
-		public List<DayUsage> Usages { get; set; }
+		public string Name { get; set; }
+		public string Building { get; set; }
+		public List<DayUsage> Series { get; set; }
 	}
 
 	public class UnitsWithInfo
 	{
 		public string Unit { get; set; }
 		public List<tempDaysUsage> Infos { get; set; }
+    }
+
+	public class DayUsageWithUnitsNotNested
+	{
+		public string Name { get; set; }
+		public string Building { get; set; }
+		public string Date { get; set; }
+		public float Duration { get; set; }
+	}
+
+	public class DayUsageWithAndWithoutNested
+	{
+        public List<DayUsageWithUnits> nested { get; set; }
+		public List<DayUsageWithUnitsNotNested> notNested { get; set; }
     }
 }
 

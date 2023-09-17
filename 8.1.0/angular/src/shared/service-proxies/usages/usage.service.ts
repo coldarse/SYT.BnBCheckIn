@@ -104,9 +104,9 @@ export class UsageService {
     }
 
     //Usage Report
-    getDayUsage(){
+    getDayUsage(days: number){
         return this.http.get(
-            this.url + "/api/services/app/Usage/GetDayUsage",
+            this.url + `/api/services/app/Usage/GetDayUsage?days=${days}`,
             this.options_
         ).pipe(
             retry(1),

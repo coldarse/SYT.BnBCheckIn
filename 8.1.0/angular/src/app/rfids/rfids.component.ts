@@ -116,6 +116,8 @@ export class RFIDSComponent extends PagedListingComponentBase<RFIDDto> {
         result.result.items.forEach((element: RFIDDto) => {
           let unit = results.result.find(x => x.id == element.unitId);
 
+          if (unit == undefined) return;
+          
           let tempRFID = {
             id: element.id,
             unit: unit.unitNo,

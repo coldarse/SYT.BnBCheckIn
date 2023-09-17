@@ -133,14 +133,44 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <select class="form-select form-control" (change)="selected($event)">
-                        <option *ngFor="let item of usage" value="{{item.unit}}" >
-                            {{item.unit}}
-                        </option>
-                    </select>
+                    <div class="row">
+                        <div class="col-3">
+                            <select class="form-select form-control" (change)="selectedBuilding($event)">
+                                <option *ngFor="let item of buildings" value="{{item}}" >
+                                    {{item}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-1">
+                            <select class="form-select form-control" (change)="selectedDays($event)">
+                                <option value="{{days.value}}" *ngFor="let days of noOfDays">
+                                    {{days.day}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <button style="margin-bottom: 2rem;" type="button" class="btn btn-success" (click)="exportexcel()">
+                                <i class="fas fa-file-download"></i>&nbsp;Download Records
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <ngx-charts-bar-vertical
+                    <ngx-charts-line-chart
+                    [view]="view"
+                    [scheme]="colorScheme"
+                    [legend]="legend"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxis]="xAxis"
+                    [yAxis]="yAxis"
+                    [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel"
+                    [timeline]="timeline"
+                    [results]="single"
+                    >
+                    </ngx-charts-line-chart>
+                    <!-- <ngx-charts-line-chart
                     [view]="view"
                     [scheme]="colorScheme"
                     [results]="single"
@@ -152,7 +182,7 @@
                     [showYAxisLabel]="showYAxisLabel"
                     [xAxisLabel]="xAxisLabel"
                     [yAxisLabel]="yAxisLabel">
-                    </ngx-charts-bar-vertical>
+                    </ngx-charts-line-chart> -->
                 </div>
             </div>
         </div>

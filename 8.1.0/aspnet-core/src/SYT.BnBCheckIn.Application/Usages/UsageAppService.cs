@@ -32,78 +32,55 @@ namespace SYT.BnBCheckIn.Usages
             return usage;
         }
 
-        public async Task<List<DayUsageWithUnits>> GetDayUsage()
+        public async Task<DayUsageWithAndWithoutNested> GetDayUsage(int days)
         {
-            var todayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
-            var aMonthAgo = todayDate.AddDays(-30).Date;
-
-            var usage = Repository.GetAll().Where(x => x.EndTime != DateTime.MinValue);
-
-            usage = usage.Where(x => (x.StartTime <= todayDate && x.StartTime >= aMonthAgo));
-
-            List<string> tempUnits = new List<string>();
-
-            foreach(var u in usage)
+            try
             {
-                if (!tempUnits.Contains(u.Unit)) tempUnits.Add(u.Unit);
-            }
+                var todayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
+                var aMonthAgo = todayDate.AddDays(-days).Date;
 
-            List<UnitsWithInfo> unitsinfo = new List<UnitsWithInfo>();
+                var usage = Repository.GetAll().Where(x => x.EndTime != DateTime.MinValue);
 
-            foreach (var u in tempUnits)
-            {
-                unitsinfo.Add(new UnitsWithInfo
+                usage = usage.Where(x => (x.StartTime <= todayDate && x.StartTime >= aMonthAgo));
+
+                if (usage.Count() == 0) return new DayUsageWithAndWithoutNested();
+
+                List<string> tempUnits = new List<string>();
+
+                foreach (var u in usage)
                 {
-                    Unit = u,
-                    Infos = new List<tempDaysUsage>(),
-                });
-            }
+                    if (!tempUnits.Contains(u.Unit)) tempUnits.Add(u.Unit);
+                }
 
-            List<DayUsageWithUnits> units = new List<DayUsageWithUnits>();
+                List<UnitsWithInfo> unitsinfo = new List<UnitsWithInfo>();
 
-            foreach (var u in unitsinfo)
-            {
-                units.Add(new DayUsageWithUnits
+                foreach (var u in tempUnits)
                 {
-                    Unit = u.Unit,
-                    Usages = new List<DayUsage>()
-                });
-            }
-
-            foreach (var u in usage)
-            {
-                int index = unitsinfo.FindIndex(x => x.Unit == u.Unit);
-                if(index != -1)
-                {
-                    unitsinfo[index].Infos.Add(new tempDaysUsage
+                    unitsinfo.Add(new UnitsWithInfo
                     {
-                        Id = u.Id,
-                        Unit = u.Unit,
-                        Pico = u.Pico,
-                        RFID = u.RFID,
-                        Building = u.Building,
-                        StartTime = u.StartTime,
-                        EndTime = u.EndTime
+                        Unit = u,
+                        Infos = new List<tempDaysUsage>(),
                     });
                 }
-            }
 
-            
+                List<DayUsageWithUnits> units = new List<DayUsageWithUnits>();
 
-            foreach (var v in unitsinfo)
-            {
-                List<tempDaysUsage> tempByDate = new List<tempDaysUsage>();
-
-                foreach (var u in v.Infos)
+                foreach (var u in unitsinfo)
                 {
-                    
-
-                    TimeSpan ts = u.EndTime - u.StartTime;
-
-                    int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
-                    if (dateindex == -1)
+                    units.Add(new DayUsageWithUnits
                     {
-                        tempByDate.Add(new tempDaysUsage
+                        Name = u.Unit,
+                        Building = "",
+                        Series = new List<DayUsage>()
+                    });
+                }
+
+                foreach (var u in usage)
+                {
+                    int index = unitsinfo.FindIndex(x => x.Unit == u.Unit);
+                    if (index != -1)
+                    {
+                        unitsinfo[index].Infos.Add(new tempDaysUsage
                         {
                             Id = u.Id,
                             Unit = u.Unit,
@@ -111,30 +88,90 @@ namespace SYT.BnBCheckIn.Usages
                             RFID = u.RFID,
                             Building = u.Building,
                             StartTime = u.StartTime,
-                            EndTime = u.EndTime,
-                            Duration = ts.Hours,
+                            EndTime = u.EndTime
                         });
                     }
-                    else
+                }
+
+
+
+                foreach (var v in unitsinfo)
+                {
+                    List<tempDaysUsage> tempByDate = new List<tempDaysUsage>();
+
+                    foreach (var u in v.Infos)
                     {
-                        tempByDate[dateindex].Duration += ts.Hours;
+
+
+                        TimeSpan ts = u.EndTime - u.StartTime;
+
+                        int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
+                        if (dateindex == -1)
+                        {
+                            tempByDate.Add(new tempDaysUsage
+                            {
+                                Id = u.Id,
+                                Unit = u.Unit,
+                                Pico = u.Pico,
+                                RFID = u.RFID,
+                                Building = u.Building,
+                                StartTime = u.StartTime,
+                                EndTime = u.EndTime,
+                                Duration = ts.Hours,
+                            });
+                        }
+                        else
+                        {
+                            tempByDate[dateindex].Duration += ts.Hours;
+                        }
+                    }
+
+                    tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
+
+                    int unitindex = units.FindIndex(x => x.Name == v.Unit);
+                    foreach (var u in tempByDate)
+                    {
+                        units[unitindex].Series.Add(new DayUsage
+                        {
+                            name = u.StartTime.Date.ToString("MMM dd"),
+                            value = u.Duration
+                        });
+
+                        if (units[unitindex].Building == "")
+                        {
+                            units[unitindex].Building = u.Building;
+                        }
                     }
                 }
 
-                tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
-
-                int unitindex = units.FindIndex(x => x.Unit == v.Unit);
-                foreach(var u in tempByDate)
+                List<DayUsageWithUnitsNotNested> notNested = new();
+                foreach (var a in units)
                 {
-                    units[unitindex].Usages.Add(new DayUsage
+                    foreach (var b in a.Series)
                     {
-                        name = u.StartTime.Date.ToString("MMM dd"),
-                        value = u.Duration
-                    });
+                        notNested.Add(new DayUsageWithUnitsNotNested()
+                        {
+                            Name = a.Name,
+                            Building = a.Building,
+                            Date = b.name,
+                            Duration = b.value,
+                        });
+                    }
                 }
-            }
 
-            return units;
+
+
+                return new DayUsageWithAndWithoutNested()
+                {
+                    nested = units,
+                    notNested = notNested,
+                };
+            }
+            catch(Exception ex)
+            {
+                return new DayUsageWithAndWithoutNested();
+            }
+            
         }
     }
 }

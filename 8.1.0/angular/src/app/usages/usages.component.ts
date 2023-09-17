@@ -5,6 +5,8 @@ import { finalize } from 'rxjs/operators';
 import { UsageDto } from '@shared/service-proxies/usages/model'
 import { UsageService } from '@shared/service-proxies/usages/usage.service'
 import { CreateUpdateUsageComponent } from '../usages/create-update-usage/create-update-usage.component'
+import * as XLSX from 'xlsx';
+import * as moment from 'moment'; 
 
 class PagedUsagesRequestDto extends PagedRequestDto{
   keyword: string
@@ -20,82 +22,55 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   keyword = '';
   usages: any[] = [];
   view: any[] = [800, 400];
-  
 
-  usage: any[] = [];
+  EXCEL_EXTENSION = '.xlsx';
+  filename = 'Usage';
+  days = 7;
+
+  usage: any = '';
 
   // options
-  showXAxis = true;
-  showYAxis = true;
-  gradient = false;
-  showLegend = false;
-  showXAxisLabel = true;
-  xAxisLabel = 'Date';
-  showYAxisLabel = true;
-  yAxisLabel = 'Hours';
+  legend: boolean = true;
+  showLabels: boolean = true;
+  animations: boolean = true;
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+  showYAxisLabel: boolean = true;
+  showXAxisLabel: boolean = true;
+  xAxisLabel: string = 'Date';
+  yAxisLabel: string = 'Hours';
+  timeline: boolean = true;
 
   colorScheme = {
-    domain: ['#116cb7', '#AAAAAA']
+    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
-  single: any[] = [
+  noOfDays = [
     {
-      "name": "18th Aug",
-      "value": 5
+      value: 7,
+      day: '7 days'
     },
     {
-      "name": "19th Aug",
-      "value": 8
+      value: 14,
+      day: '14 days'
     },
     {
-      "name": "20th Aug",
-      "value": 3
+      value: 30,
+      day: '30 days'
     },
-    {
-      "name": "21st Aug",
-      "value": 7
-    },
-    {
-      "name": "22nd Aug",
-      "value": 18
-    },
-    {
-      "name": "23rd Aug",
-      "value": 17
-    },
-    {
-      "name": "24th Aug",
-      "value": 10
-    },
-    {
-      "name": "25th Aug",
-      "value": 4
-    },
-    {
-      "name": "26th Aug",
-      "value": 0
-    },
-    {
-      "name": "27th Aug",
-      "value": 2
-    },
-    {
-      "name": "28th Aug",
-      "value": 5
-    },
-    {
-      "name": "29th Aug",
-      "value": 3
-    },
-    {
-      "name": "30th Aug",
-      "value": 14
-    },
-    {
-      "name": "31st Aug",
-      "value": 9
-    },
+    // {
+    //   value: 60,
+    //   day: '60 days'
+    // },
+    // {
+    //   value: 90,
+    //   day: '90 days'
+    // },
   ];
+
+  single: any[] = [];
+  buildings: any[] = [];
+  forExcel: any[] = [];
 
   constructor(
     injector: Injector,
@@ -170,47 +145,80 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     finishedCallback: Function
   ): void {
     request.keyword = this.keyword;
+    // this._usageService
+    // .getAll(
+    //   request
+    // ).pipe(
+    //   finalize(() => {
+    //     finishedCallback();
+    //   })
+    // )
+    // .subscribe((result: any) => {
+    //   this.usages = [];
+    //     result.result.items.forEach((element: UsageDto) => {
+
+    //       let tempUsage = {
+    //         id: element.id,
+    //         unit: element.unit,
+    //         pico: element.pico,
+    //         rFID: element.rfid,
+    //         building: element.building,
+    //         startTime: element.startTime,
+    //         endTime: element.endTime,
+    //         checkInRef: element.checkInRef,
+    //       }
+
+    //       this.usages.push(tempUsage);
+    //     });
     this._usageService
-    .getAll(
-      request
-    ).pipe(
+    .getDayUsage(7).pipe(
       finalize(() => {
         finishedCallback();
       })
-    )
-    .subscribe((result: any) => {
-      this.usages = [];
-        result.result.items.forEach((element: UsageDto) => {
-
-          let tempUsage = {
-            id: element.id,
-            unit: element.unit,
-            pico: element.pico,
-            rFID: element.rfid,
-            building: element.building,
-            startTime: element.startTime,
-            endTime: element.endTime,
-            checkInRef: element.checkInRef,
-          }
-
-          this.usages.push(tempUsage);
-        });
-        this._usageService
-        .getDayUsage().pipe(
-          finalize(() => {
-            finishedCallback();
-          })
-        ).subscribe((result: any) => {
-          this.usage = result.result;
-          this.single = result.result[0].usages;
-        });
-      this.showPaging(result.result, pageNumber);
+    ).subscribe((result: any) => {
+      this.buildings = [...new Set(result.result.nested.map(item => item.building))];
+      this.buildings.unshift('All');
+      this.usage = JSON.stringify(result.result.nested);
+      this.single = result.result.nested;
+      this.forExcel = result.result.notNested;
     });
+      // this.showPaging(result.result, pageNumber);
+    // });
     
   }
 
-  selected(event: any){
-    let index = this.usage.findIndex(x => x.unit == event.target.value);
-    this.single = this.usage[index].usages;
+  exportexcel(){
+    const date = moment(new Date(), "DD-MM-YYYY");
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.forExcel);
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new(); 
+    console.log(ws)
+    // save to file
+    XLSX.utils.book_append_sheet(workbook, ws, 'Sheet1');
+    XLSX.writeFile(workbook, `${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`);
+  }
+
+  selectedBuilding(event: any){
+    if(event.target.value == "All"){
+      this.single = JSON.parse(this.usage);
+    }
+    else{
+      let temp_usage: [] = JSON.parse(this.usage);
+      this.single = temp_usage.filter((obj: any) => {
+        return obj.building === event.target.value;
+      });
+    }
+  }
+
+  selectedDays(event: any){
+    this.days = event.target.value;
+    this._usageService
+    .getDayUsage(event.target.value)
+    .subscribe((result: any) => {
+      this.buildings = [...new Set(result.result.nested.map(item => item.building))];
+      this.buildings.unshift('All');
+      this.usage = JSON.stringify(result.result.nested);
+      this.single = result.result.nested;
+      this.forExcel = result.result.notNested;
+    });
   }
 }
