@@ -59,20 +59,21 @@ namespace SYT.BnBCheckIn.Units
 
             List<string> rfids = _rFIDAppService.getUnitRFIDs(tempunit.Id);
 
+            var pico = await _picoAppService.getPico(input.PicoId);
+            var unit = await Repository.FirstOrDefaultAsync(x => x.Id == pico.UnitId);
+            var building = await _buildingAppService.getBuilding(unit.BuildingId);
+
             if (tempunit.UnitNo.ToLower().Contains("master"))
             {
+                if (tempunit.BuildingId != unit.BuildingId) return verify;
+
                 verify.Validity = true;
                 verify.UnitRFIDs = rfids;
 
                 return verify;
             }
 
-            var pico = await _picoAppService.getPico(input.PicoId);
-
             if (pico.UnitId != rfid.UnitId) return verify;
-
-            var unit = await Repository.FirstOrDefaultAsync(x => x.Id == pico.UnitId);
-            var building = await _buildingAppService.getBuilding(unit.BuildingId);
 
             var usage = _usageAppService.Create(new Usages.Dto.UsageDto
             {
