@@ -47,25 +47,32 @@ namespace SYT.BnBCheckIn.Units
             return temp;
         }
 
+        public async Task<Unit> GetUnitbyName(string unit)
+        {
+            Unit temp = await Repository.FirstOrDefaultAsync(x => x.UnitNo.ToLower() == unit.ToLower());
+            return temp;
+        }
+
         public async Task<VerifyDto> Verify(VerifyComponentsDto input)
         {
             VerifyDto verify = new VerifyDto();
 
             var rfid = await _rFIDAppService.getRFID(input.RFID);
-
-            Unit tempunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));
-
-            if (tempunit is null) return verify;
-
-            List<string> rfids = _rFIDAppService.getUnitRFIDs(tempunit.Id);
-
             var pico = await _picoAppService.getPico(input.PicoId);
+
+            Unit picounit = Repository.FirstOrDefault(u => u.Id.Equals(pico.UnitId));
+            Unit rfidunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));
+
+            if (picounit is null) return verify;
+
+            List<string> rfids = _rFIDAppService.getUnitRFIDs(picounit.Id);
+
             var unit = await Repository.FirstOrDefaultAsync(x => x.Id == pico.UnitId);
             var building = await _buildingAppService.getBuilding(unit.BuildingId);
 
-            if (tempunit.UnitNo.ToLower().Contains("master"))
+            if (rfidunit.UnitNo.ToLower().Contains("master"))
             {
-                if (tempunit.BuildingId != unit.BuildingId) return verify;
+                if (rfidunit.BuildingId != unit.BuildingId) return verify;
 
                 verify.Validity = true;
                 verify.UnitRFIDs = rfids;

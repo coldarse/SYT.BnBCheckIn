@@ -8,19 +8,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SYT.BnBCheckIn.RFIDS.Dto;
+using SYT.BnBCheckIn.Units;
 
 namespace SYT.BnBCheckIn.RFIDS
 {
     public class RFIDAppService : CrudAppService<RFID, RFIDDto, Guid, PagedRFIDResultRequestDto>
     {
+        //private readonly UnitAppService _unitAppService;
 
-        public RFIDAppService(IRepository<RFID, Guid> repository) : base(repository)
+        public RFIDAppService(IRepository<RFID, Guid> repository
+            //,UnitAppService unitAppService
+            ) : base(repository)
         {
+            //_unitAppService = unitAppService;
         }
+
         protected override IQueryable<RFID> CreateFilteredQuery(PagedRFIDResultRequestDto input)
         {
+            //if (!input.Keyword.IsNullOrWhiteSpace())
+            //{
+            //    var unit = _unitAppService.GetUnitbyName(input.Keyword);
+            //    if (unit is not null)
+            //    {
+            //        return Repository.GetAllIncluding()
+            //            .Where(x => x.UnitId.Equals(unit.Id));
+            //    }
+
+            //    return Repository.GetAllIncluding()
+            //        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x =>
+            //            x.Value.Contains(input.Keyword)).AsQueryable();
+            //}
+
+            //return Repository.GetAll();
+
             return Repository.GetAllIncluding()
-                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => 
+                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x =>
                     x.Value.Contains(input.Keyword)).AsQueryable();
         }
 
