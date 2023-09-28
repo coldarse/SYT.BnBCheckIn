@@ -51,13 +51,22 @@ namespace SYT.BnBCheckIn.RFIDS
             return await Repository.FirstOrDefaultAsync(x => x.Value == value);
         }
 
-        public List<string> getUnitRFIDs(Guid unitId)
+        public List<string> getUnitRFIDs(Guid unitId, Guid masterunit)
         {
             List<RFID> rfids = Repository.GetAllIncluding().Where(r => r.UnitId.Equals(unitId)).ToList();
+
+            List<RFID> masterrfids = Repository.GetAllIncluding().Where(m => m.UnitId.Equals(masterunit)).ToList();
+
             List<string> unitrfids = new List<string>();
+
             foreach(var rfid in rfids)
             {
                 unitrfids.Add(rfid.Value);
+            }
+
+            foreach (var m_rfid in masterrfids)
+            {
+                unitrfids.Add(m_rfid.Value);
             }
 
             return unitrfids;

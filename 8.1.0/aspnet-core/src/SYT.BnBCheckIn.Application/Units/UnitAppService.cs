@@ -57,47 +57,60 @@ namespace SYT.BnBCheckIn.Units
         {
             VerifyDto verify = new VerifyDto();
 
-            var rfid = await _rFIDAppService.getRFID(input.RFID);
-            var pico = await _picoAppService.getPico(input.PicoId);
-
-            Unit picounit = Repository.FirstOrDefault(u => u.Id.Equals(pico.UnitId));
-            Unit rfidunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));
-
-            if (picounit is null) return verify;
-
-            List<string> rfids = _rFIDAppService.getUnitRFIDs(picounit.Id);
-
-            var unit = await Repository.FirstOrDefaultAsync(x => x.Id == pico.UnitId);
-            var building = await _buildingAppService.getBuilding(unit.BuildingId);
-
-            if (rfidunit.UnitNo.ToLower().Contains("master"))
+            try
             {
-                if (rfidunit.BuildingId != unit.BuildingId) return verify;
+                var rfid = await _rFIDAppService.getRFID(input.RFID);
+                var pico = await _picoAppService.getPico(input.PicoId);
+
+                Unit picounit = Repository.FirstOrDefault(u => u.Id.Equals(pico.UnitId));
+                Unit rfidunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));
+
+                if (picounit is null) return verify;
+                if (rfidunit is null) return verify;
+
+                var unit = await Repository.FirstOrDefaultAsync(x => x.Id == pico.UnitId);
+                var building = await _buildingAppService.getBuilding(unit.BuildingId);
+
+                //--- Getting Building ID for Master to match with Unit's Building Id ---//
+                var units = await Repository.GetAllListAsync(x => x.BuildingId == unit.BuildingId);
+                var master_unit = units.Find(x => x.UnitNo.ToLower().Contains("master"));
+
+                List<string> rfids = _rFIDAppService.getUnitRFIDs(picounit.Id, master_unit.Id);
+
+                if (rfidunit.UnitNo.ToLower().Contains("master"))
+                {
+                    if (rfidunit.BuildingId != unit.BuildingId) return verify;
+                    
+                    verify.Validity = true;
+                    verify.UnitRFIDs = rfids;
+
+                    return verify;
+                }
+
+                if (pico.UnitId != rfid.UnitId) return verify;
+
+                var usage = _usageAppService.Create(new Usages.Dto.UsageDto
+                {
+                    Unit = unit.UnitNo,
+                    Pico = pico.Name,
+                    RFID = rfid.Value,
+                    Building = building.Name,
+                    StartTime = DateTime.UtcNow,
+                    EndTime = DateTime.MinValue,
+                    CheckInRef = ""
+                });
 
                 verify.Validity = true;
+                verify.UsageId = usage.Id;
                 verify.UnitRFIDs = rfids;
 
                 return verify;
             }
-
-            if (pico.UnitId != rfid.UnitId) return verify;
-
-            var usage = _usageAppService.Create(new Usages.Dto.UsageDto
+            catch(Exception ex)
             {
-                Unit = unit.UnitNo,
-                Pico = pico.Name,
-                RFID = rfid.Value,
-                Building = building.Name,
-                StartTime = DateTime.UtcNow,
-                EndTime = DateTime.MinValue,
-                CheckInRef = ""
-            });
-
-            verify.Validity = true;
-            verify.UsageId = usage.Id;
-            verify.UnitRFIDs = rfids;
-
-            return verify;
+                verify.Error = ex.Message.ToString();
+                return verify;
+            }
         }
 
     }
