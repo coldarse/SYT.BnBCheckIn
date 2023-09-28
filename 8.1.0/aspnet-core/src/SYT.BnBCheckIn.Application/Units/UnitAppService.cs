@@ -108,7 +108,7 @@ namespace SYT.BnBCheckIn.Units
             }
             catch(Exception ex)
             {
-                verify.Error = ex.Message.ToString();
+                verify.Error = ex.ToString();
                 return verify;
             }
         }
