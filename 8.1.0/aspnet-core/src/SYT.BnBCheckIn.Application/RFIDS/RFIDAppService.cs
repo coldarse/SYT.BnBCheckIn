@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SYT.BnBCheckIn.RFIDS.Dto;
 using SYT.BnBCheckIn.Units;
+using Abp.UI;
 
 namespace SYT.BnBCheckIn.RFIDS
 {
@@ -94,6 +95,13 @@ namespace SYT.BnBCheckIn.RFIDS
             {
                 return false;
             }
+        }
+
+        public async Task<bool> getIsExist(string value)
+        {
+            var rfid = await Repository.FirstOrDefaultAsync(x => x.Value == value);
+            if (rfid is null) return true;
+            return false;
         }
     }
 }

@@ -5,7 +5,7 @@
     (ngSubmit)='save()'
 >
     <abp-modal-header
-        [title]='isCreate == true? ("Add RFID" | localize) : ("Edit RFID" | localize)'
+        [title]='isCreate == true? ("Add Card" | localize) : ("Edit Card" | localize)'
         (onCloseClick)='bsModalRef.hide()'
     ></abp-modal-header>
     <div class='modal-body'>
@@ -30,40 +30,50 @@
             ></abp-validation-summary>
             </div>
         </div>
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label">
+                {{ 'Type' | localize }}
+            </label>
+            <div class="col-md-9">
+                <select
+                id="type"
+                name="type"
+                class="form-select form-control"
+                (change)="selectType($event)"
+                >
+                    <option value='0'>Select Type</option>
+                    <option value='1'>Room</option>
+                    <option value='2'>Master</option>
+                </select>
+            </div>
+        </div>
         <div class='form-group row required'>
             <label class='col-md-3 col-form-label' for='unitId'>
-            {{ 'UnitId' | localize }}
+                {{ 'UnitId' | localize }}
             </label>
             <div class='col-md-9'>
-            <!-- <input
-                class='form-control'
-                name='unitId'
-                id='unitId'
-                required
-                [(ngModel)]='rfid.unitId'
-                #unitIdModel='ngModel'
-                #unitIdEl
-            />
-            <abp-validation-summary
-                [control]='unitIdModel'
-                [controlEl]='unitIdEl'
-            ></abp-validation-summary> -->
-            <select
-            id="unitId"
-            name="unitId"
-            class="form-select form-control"
-            (change)="selectUnit($event)"
-            [(ngModel)]="rfid.unitId"
-            >
-            <option value=''></option>
-            <option
-              *ngFor="let option of units"
-              value="{{ option.id }}"
-            >
-              {{ option.unitNo | localize }}
-            </option>
-            </select>
+                <select
+                id="unitId"
+                name="unitId"
+                class="form-select form-control"
+                (change)="selectUnit($event)"
+                [(ngModel)]="rfid.unitId"
+                [disabled]="type == 0"
+                >
+                    <option value=''></option>
+                    <option
+                        *ngFor="let option of units"
+                        value="{{ option.id }}"
+                        >
+                        {{ option.unitNo | localize }}
+                    </option>
+                </select>
             </div>
+        </div>
+        <div *ngIf="isExists">
+            <label style="color:crimson;">
+                Card Value already exists. Please use another value.
+            </label>
         </div>
     </div>
     <abp-modal-footer
