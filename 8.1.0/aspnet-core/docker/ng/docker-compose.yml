@@ -4,7 +4,7 @@ services:
 
   bnbcheckin_api:
     build: ./
-    image: dannychen98/bnbcheckin_api:v0.13
+    image: dannychen98/bnbcheckin_api:v0.14
     environment:
       ASPNETCORE_ENVIRONMENT: "Staging"
       ConnectionStrings__Default: "server=95.217.117.206;port=3306;database=BnbCheckInDb;uid=sammy;pwd=Syt@1234;"
@@ -21,6 +21,6 @@ services:
 
   bncheckin_ms:
     build: ./
-    image: dannychen98/bnbcheckin_ms:v0.13
+    image: dannychen98/bnbcheckin_ms:v0.14
     ports:
       - "4200:80"
