@@ -102,4 +102,15 @@ export class RFIDService {
             catchError(this.handleError),
         )
     }
+
+    //Check if exists
+    isExist(value: string){
+        return this.http.get(
+            this.url + `/api/services/app/RFID/getIsExist?value=${value}`,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
 }

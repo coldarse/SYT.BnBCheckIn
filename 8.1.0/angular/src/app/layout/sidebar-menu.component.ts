@@ -83,7 +83,7 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
                 'Pages.Building'
             ),
             new MenuItem(
-                this.l('RFIDS'),
+                this.l('Cards'),
                 '/app/rfids',
                 'fa-solid fa-house-signal',
                 'Pages.RFID'

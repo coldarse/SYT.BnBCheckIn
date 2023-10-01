@@ -14,9 +14,14 @@ export class CreateUpdateRFIDComponent extends AppComponentBase
 
   saving = false;
   isCreate = true;
+  isExists = false;
   rfid?: RFIDDto = {} as RFIDDto;
 
+  type = 0;
+
   units: any[];
+
+  tempUnits = '';
 
   @Output() onSave = new EventEmitter<any>();
 
@@ -32,10 +37,25 @@ export class CreateUpdateRFIDComponent extends AppComponentBase
     if(this.rfid.id != undefined){
       this.isCreate = false;
     }
+
+    this.tempUnits = JSON.stringify(this.units);
   }
 
   selectUnit(event: any){
     this.rfid.unitId = event.target.value;
+  }
+
+  selectType(event: any){
+    this.type = event.target.value;
+    if(this.type == 1){
+      this.units = JSON.parse(this.tempUnits).filter(x => !x.unitNo.toLowerCase().includes('master'))
+    }
+    else if(this.type == 2){
+      this.units = JSON.parse(this.tempUnits).filter(x => x.unitNo.toLowerCase().includes('master'))
+    }
+    else{
+      this.units = JSON.parse(this.tempUnits);
+    }
   }
 
   save(): void {
@@ -50,20 +70,31 @@ export class CreateUpdateRFIDComponent extends AppComponentBase
         },
         () => {
           this.saving = false;
+          this.isExists = false;
         }
       );
     }
     else{
-      this._rfidService.create(this.rfid).subscribe(
-        () => {
-          this.notify.info(this.l('SavedSuccessfully'));
-          this.bsModalRef.hide();
-          this.onSave.emit();
-        },
-        () => {
-          this.saving = false;
+      this._rfidService.isExist(this.rfid.value).subscribe((data: any) => {
+        if(data.result == true){
+          this._rfidService.create(this.rfid).subscribe(
+            () => {
+              this.notify.info(this.l('SavedSuccessfully'));
+              this.bsModalRef.hide();
+              this.onSave.emit();
+            },
+            () => {
+              this.saving = false;
+              this.isExists = false;
+            }
+          );
         }
-      );
+        else{
+          this.rfid = {} as RFIDDto;
+          this.saving = false;
+          this.isExists = true;
+        }
+      });
     }
 
   }
