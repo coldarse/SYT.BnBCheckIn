@@ -27,7 +27,9 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   filename = 'Usage';
   days = 7;
 
-  usage: any = '';
+  usage: string = '';
+  forExcel: string = '';
+  unitForExcel: string = ''
 
   // options
   legend: boolean = true;
@@ -58,19 +60,21 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       value: 30,
       day: '30 days'
     },
-    // {
-    //   value: 60,
-    //   day: '60 days'
-    // },
-    // {
-    //   value: 90,
-    //   day: '90 days'
-    // },
+    {
+      value: 60,
+      day: '60 days'
+    },
+    {
+      value: 90,
+      day: '90 days'
+    },
   ];
 
   single: any[] = [];
   buildings: any[] = [];
-  forExcel: any[] = [];
+  units: any[] = [];
+
+  arrayForExcel: any[] = [];
 
   constructor(
     injector: Injector,
@@ -188,8 +192,17 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   }
 
   exportexcel(){
+    if(this.unitForExcel != ''){
+      let tempArr: any[] = JSON.parse(this.forExcel);
+      this.arrayForExcel = tempArr.filter((obj: any) => {
+        return obj.unit === this.unitForExcel;
+      });
+    }
+    else{
+      this.arrayForExcel = JSON.parse(this.forExcel);
+    }
     const date = moment(new Date(), "DD-MM-YYYY");
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.forExcel);
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.arrayForExcel);
     const workbook: XLSX.WorkBook = XLSX.utils.book_new(); 
     console.log(ws)
     // save to file
@@ -209,6 +222,20 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     }
   }
 
+  selectedUnit(event: any){
+    if(event.target.value == "All"){
+      this.single = JSON.parse(this.usage);
+      this.unitForExcel = '';
+    }
+    else{
+      this.unitForExcel = event.target.value;
+      let temp_usage: [] = JSON.parse(this.usage);
+      this.single = temp_usage.filter((obj: any) => {
+        return obj.unit === event.target.value;
+      });
+    }
+  }
+
   selectedDays(event: any){
     this.days = event.target.value;
     this._usageService
@@ -216,9 +243,12 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     .subscribe((result: any) => {
       this.buildings = [...new Set(result.result.nested.map(item => item.building))];
       this.buildings.unshift('All');
+      this.units = [...new Set(result.result.nested.map(item => item.unit))];
+      this.units.unshift('All');
       this.usage = JSON.stringify(result.result.nested);
       this.single = result.result.nested;
-      this.forExcel = result.result.notNested;
+      this.forExcel = JSON.stringify(result.result.notNested);
+      console.log(this.forExcel)
     });
   }
 }

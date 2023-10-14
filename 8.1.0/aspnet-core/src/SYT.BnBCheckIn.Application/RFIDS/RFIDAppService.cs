@@ -15,36 +15,36 @@ namespace SYT.BnBCheckIn.RFIDS
 {
     public class RFIDAppService : CrudAppService<RFID, RFIDDto, Guid, PagedRFIDResultRequestDto>
     {
-        //private readonly UnitAppService _unitAppService;
+        private readonly UnitAppService _unitAppService;
 
         public RFIDAppService(IRepository<RFID, Guid> repository
-            //,UnitAppService unitAppService
+            ,UnitAppService unitAppService
             ) : base(repository)
         {
-            //_unitAppService = unitAppService;
+            _unitAppService = unitAppService;
         }
 
         protected override IQueryable<RFID> CreateFilteredQuery(PagedRFIDResultRequestDto input)
         {
-            //if (!input.Keyword.IsNullOrWhiteSpace())
-            //{
-            //    var unit = _unitAppService.GetUnitbyName(input.Keyword);
-            //    if (unit is not null)
-            //    {
-            //        return Repository.GetAllIncluding()
-            //            .Where(x => x.UnitId.Equals(unit.Id));
-            //    }
+            if (!input.Keyword.IsNullOrWhiteSpace())
+            {
+                var unit = _unitAppService.GetUnitbyName(input.Keyword);
+                if (unit is not null)
+                {
+                    return Repository.GetAllIncluding()
+                        .Where(x => x.UnitId.Equals(unit.Id));
+                }
 
-            //    return Repository.GetAllIncluding()
-            //        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x =>
-            //            x.Value.Contains(input.Keyword)).AsQueryable();
-            //}
+                return Repository.GetAllIncluding()
+                    .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x =>
+                        x.Value.Contains(input.Keyword)).AsQueryable();
+            }
 
-            //return Repository.GetAll();
+            return Repository.GetAll();
 
-            return Repository.GetAllIncluding()
-                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x =>
-                    x.Value.Contains(input.Keyword)).AsQueryable();
+            //return Repository.GetAllIncluding()
+            //    .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x =>
+            //        x.Value.Contains(input.Keyword)).AsQueryable().OrderBy(x => x.UnitId);
         }
 
         public async Task<RFID> getRFID(string value)

@@ -69,7 +69,7 @@ namespace SYT.BnBCheckIn.Usages
                 {
                     units.Add(new DayUsageWithUnits
                     {
-                        Name = u.Unit,
+                        Unit = u.Unit,
                         Building = "",
                         Series = new List<DayUsage>()
                     });
@@ -117,24 +117,26 @@ namespace SYT.BnBCheckIn.Usages
                                 Building = u.Building,
                                 StartTime = u.StartTime,
                                 EndTime = u.EndTime,
-                                Duration = ts.Hours,
+                                Duration = (float)ts.TotalMinutes,
                             });
                         }
                         else
                         {
-                            tempByDate[dateindex].Duration += ts.Hours;
+                            tempByDate[dateindex].Duration += (float)ts.TotalMinutes;
                         }
                     }
 
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
 
-                    int unitindex = units.FindIndex(x => x.Name == v.Unit);
+                    int unitindex = units.FindIndex(x => x.Unit == v.Unit);
                     foreach (var u in tempByDate)
                     {
                         units[unitindex].Series.Add(new DayUsage
                         {
                             name = u.StartTime.Date.ToString("MMM dd"),
-                            value = u.Duration
+                            value = u.Duration,
+                            start = u.StartTime.ToString(),
+                            end = u.EndTime.ToString()
                         });
 
                         if (units[unitindex].Building == "")
@@ -149,12 +151,14 @@ namespace SYT.BnBCheckIn.Usages
                 {
                     foreach (var b in a.Series)
                     {
+                        TimeSpan time = TimeSpan.FromMinutes(b.value);
                         notNested.Add(new DayUsageWithUnitsNotNested()
                         {
-                            Name = a.Name,
+                            Unit = a.Unit,
                             Building = a.Building,
-                            Date = b.name,
-                            Duration = b.value,
+                            StartTime = b.start,
+                            EndTime = b.end,
+                            Duration = time.ToString("dd':'hh':'mm':'ss"),
                         });
                     }
                 }
