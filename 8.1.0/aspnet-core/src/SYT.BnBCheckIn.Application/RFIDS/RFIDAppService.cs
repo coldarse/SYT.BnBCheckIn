@@ -10,25 +10,26 @@ using System.Threading.Tasks;
 using SYT.BnBCheckIn.RFIDS.Dto;
 using SYT.BnBCheckIn.Units;
 using Abp.UI;
+using SYT.BnBCheckIn.Picos;
 
 namespace SYT.BnBCheckIn.RFIDS
 {
     public class RFIDAppService : CrudAppService<RFID, RFIDDto, Guid, PagedRFIDResultRequestDto>
     {
-        private readonly UnitAppService _unitAppService;
+        private readonly IRepository<Unit, Guid> _unitRepository;
 
-        public RFIDAppService(IRepository<RFID, Guid> repository
-            ,UnitAppService unitAppService
+        public RFIDAppService(IRepository<RFID, Guid> repository, IRepository<Unit, Guid> unitRepository
             ) : base(repository)
         {
-            _unitAppService = unitAppService;
+            _unitRepository = unitRepository;
         }
 
         protected override IQueryable<RFID> CreateFilteredQuery(PagedRFIDResultRequestDto input)
         {
             if (!input.Keyword.IsNullOrWhiteSpace())
             {
-                var unit = _unitAppService.GetUnitbyName(input.Keyword);
+                //var unit = _unitRepository.GetUnitbyName(input.Keyword);
+                var unit = _unitRepository.FirstOrDefault(x => x.UnitNo.ToLower() == input.Keyword.ToLower());
                 if (unit is not null)
                 {
                     return Repository.GetAllIncluding()
@@ -37,7 +38,7 @@ namespace SYT.BnBCheckIn.RFIDS
 
                 return Repository.GetAllIncluding()
                     .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x =>
-                        x.Value.Contains(input.Keyword)).AsQueryable();
+                        x.Value.ToLower().Contains(input.Keyword.ToLower())).AsQueryable();
             }
 
             return Repository.GetAll();
