@@ -73,7 +73,6 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   single: any[] = [];
   buildings: any[] = [];
   units: any[] = [];
-
   arrayForExcel: any[] = [];
 
   constructor(
@@ -192,22 +191,26 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   }
 
   exportexcel(){
+    const date = moment(new Date(), "DD-MM-YYYY");
+    let fileName = '';
     if(this.unitForExcel != ''){
       let tempArr: any[] = JSON.parse(this.forExcel);
       this.arrayForExcel = tempArr.filter((obj: any) => {
         return obj.unit === this.unitForExcel;
       });
+      fileName = `${this.unitForExcel}_${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
     }
     else{
       this.arrayForExcel = JSON.parse(this.forExcel);
+      `${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
     }
-    const date = moment(new Date(), "DD-MM-YYYY");
+
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.arrayForExcel);
     const workbook: XLSX.WorkBook = XLSX.utils.book_new(); 
     console.log(ws)
     // save to file
     XLSX.utils.book_append_sheet(workbook, ws, 'Sheet1');
-    XLSX.writeFile(workbook, `${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`);
+    XLSX.writeFile(workbook, fileName);
   }
 
   selectedBuilding(event: any){
@@ -231,7 +234,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.unitForExcel = event.target.value;
       let temp_usage: [] = JSON.parse(this.usage);
       this.single = temp_usage.filter((obj: any) => {
-        return obj.unit === event.target.value;
+        return obj.name === event.target.value;
       });
     }
   }
@@ -243,12 +246,16 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     .subscribe((result: any) => {
       this.buildings = [...new Set(result.result.nested.map(item => item.building))];
       this.buildings.unshift('All');
-      this.units = [...new Set(result.result.nested.map(item => item.unit))];
+      this.units = [...new Set(result.result.nested.map(item => item.name))];
       this.units.unshift('All');
       this.usage = JSON.stringify(result.result.nested);
       this.single = result.result.nested;
       this.forExcel = JSON.stringify(result.result.notNested);
       console.log(this.forExcel)
     });
+  }
+
+  capitalizeFirstLetter(str: string){
+    return str.charAt(0).toUpperCase()+str.slice(1);
   }
 }

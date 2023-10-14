@@ -135,7 +135,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-3">
-                            <select class="form-select form-control" (change)="selectedUnit($event)">
+                            <select class="form-select form-control" (change)="selectedUnit($event)" [disabled]="units.length == 0">
                                 <option *ngFor="let item of units" value="{{item}}" >
                                     {{item}}
                                 </option>
@@ -156,20 +156,23 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <ngx-charts-line-chart
-                    [view]="view"
-                    [scheme]="colorScheme"
-                    [legend]="legend"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxis]="xAxis"
-                    [yAxis]="yAxis"
-                    [xAxisLabel]="xAxisLabel"
-                    [yAxisLabel]="yAxisLabel"
-                    [timeline]="timeline"
-                    [results]="single"
-                    >
-                    </ngx-charts-line-chart>
+                    <div class="LineChart" *ngIf="false">
+                        <ngx-charts-line-chart
+                        [view]="view"
+                        [scheme]="colorScheme"
+                        [legend]="legend"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxis]="xAxis"
+                        [yAxis]="yAxis"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                        [timeline]="timeline"
+                        [results]="single"
+                        >
+                        </ngx-charts-line-chart>
+                    </div>
+                    
                     <!-- <ngx-charts-line-chart
                     [view]="view"
                     [scheme]="colorScheme"

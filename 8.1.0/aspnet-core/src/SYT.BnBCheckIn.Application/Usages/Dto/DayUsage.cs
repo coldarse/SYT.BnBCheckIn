@@ -26,7 +26,7 @@ namespace SYT.BnBCheckIn.Usages.Dto
 
 	public class DayUsageWithUnits
 	{
-		public string Unit { get; set; }
+		public string Name { get; set; }
 		public string Building { get; set; }
 		public List<DayUsage> Series { get; set; }
 	}

@@ -69,7 +69,7 @@ namespace SYT.BnBCheckIn.Usages
                 {
                     units.Add(new DayUsageWithUnits
                     {
-                        Unit = u.Unit,
+                        Name = u.Unit,
                         Building = "",
                         Series = new List<DayUsage>()
                     });
@@ -128,7 +128,7 @@ namespace SYT.BnBCheckIn.Usages
 
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
 
-                    int unitindex = units.FindIndex(x => x.Unit == v.Unit);
+                    int unitindex = units.FindIndex(x => x.Name == v.Unit);
                     foreach (var u in tempByDate)
                     {
                         units[unitindex].Series.Add(new DayUsage
@@ -154,7 +154,7 @@ namespace SYT.BnBCheckIn.Usages
                         TimeSpan time = TimeSpan.FromMinutes(b.value);
                         notNested.Add(new DayUsageWithUnitsNotNested()
                         {
-                            Unit = a.Unit,
+                            Unit = a.Name,
                             Building = a.Building,
                             StartTime = b.start,
                             EndTime = b.end,
