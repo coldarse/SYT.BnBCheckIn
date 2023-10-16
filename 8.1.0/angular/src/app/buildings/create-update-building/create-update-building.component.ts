@@ -40,16 +40,22 @@ export class CreateUpdateBuildingComponent extends AppComponentBase
     this.saving = true;
 
     if(this.building.id != undefined){
-      this._buildingService.update(this.building).subscribe(
-        () => {
-          this.notify.info(this.l('SavedSuccessfully'));
-          this.bsModalRef.hide();
-          this.onSave.emit();
-        },
-        () => {
-          this.saving = false;
+      this._buildingService.update(this.building).subscribe(() => {
+        const body = {
+          buildingId: this.building.id,
+          name: this.building.name
         }
-      );
+        this._unitService.updateMasterUnitName(body).subscribe(
+          () => {
+            this.notify.info(this.l('SavedSuccessfully'));
+            this.bsModalRef.hide();
+            this.onSave.emit();
+          },
+          () => {
+            this.saving = false;
+          }
+        )
+      });
     }
     else{
       this._buildingService.create(this.building).subscribe((data: any) => {

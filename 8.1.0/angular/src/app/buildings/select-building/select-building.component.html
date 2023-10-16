@@ -1,0 +1,40 @@
+<form
+    class='form-horizontal'
+    autocomplete='off'
+    #createBuildingModal='ngForm'
+    (ngSubmit)='save()'
+>
+    <abp-modal-header
+        [title]='"Assign new building." | localize'
+        (onCloseClick)='bsModalRef.hide()'
+    ></abp-modal-header>
+    <div class='modal-body'>
+        <div class='form-group row required'>
+            <label class='col-md-3 col-form-label' for='buildingId'>
+            {{ 'Building' | localize }}
+            </label>
+            <div class='col-md-9'>
+            <select
+            id="buildingId"
+            name="buildingId"
+            class="form-select form-control"
+            (change)="selectBuilding($event)"
+            [(ngModel)]="buildingId"
+            >
+            <option value=''></option>
+            <option
+              *ngFor="let option of buildings"
+              value="{{ option.id }}"
+            >
+              {{ option.name | localize }}
+            </option>
+            </select>
+            </div>
+        </div>
+    </div>
+    <abp-modal-footer
+    [cancelDisabled]='saving'
+    [saveDisabled]='!createBuildingModal.form.valid || saving || selectedBuildingId == 0'
+    (onCancelClick)='bsModalRef.hide()'
+    ></abp-modal-footer>
+</form>

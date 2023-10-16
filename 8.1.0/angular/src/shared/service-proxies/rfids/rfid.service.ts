@@ -113,4 +113,18 @@ export class RFIDService {
             catchError(this.handleError),
         )
     }
+
+    //Update Master RFID Card to Assigned Building's Master
+    updateNewMaster(body: any){
+        let url_ = this.url + "/api/services/app/RFID/updateNewMaster";
+
+        return this.http.put(
+            url_,
+            body,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
 }

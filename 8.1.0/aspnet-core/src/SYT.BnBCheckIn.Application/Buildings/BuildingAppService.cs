@@ -44,5 +44,11 @@ namespace SYT.BnBCheckIn.Buildings
             return await Repository.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<List<Building>> getAllBuildingsExcept(Guid buildingId)
+        {
+            return await Repository.GetAllListAsync(x => !x.Id.Equals(buildingId));
+        }
+
+
     }
 }

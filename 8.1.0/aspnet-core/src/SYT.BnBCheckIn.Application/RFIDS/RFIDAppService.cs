@@ -120,5 +120,31 @@ namespace SYT.BnBCheckIn.RFIDS
             if (rfid is null) return true;
             return false;
         }
+
+        public async Task<bool> updateNewMaster(UpdateMasterUnits input)
+        {
+            try
+            {
+                var unitsByBuildingId = await _unitRepository.GetAllListAsync(x => x.BuildingId == input.buildingId);
+
+                var masterUnit = unitsByBuildingId.FirstOrDefault(x => x.UnitNo.ToLower().Contains("master"));
+
+                var unitsByCurrentBuildingId = await _unitRepository.GetAllListAsync(x => x.BuildingId == input.currentBuildingId);
+
+                var currentMasterUnit = unitsByCurrentBuildingId.FirstOrDefault(x => x.UnitNo.ToLower().Contains("master"));
+
+                var tempRFID = await Repository.FirstOrDefaultAsync(x => x.UnitId == currentMasterUnit.Id);
+
+                tempRFID.UnitId = masterUnit.Id;
+
+                await Repository.UpdateAsync(tempRFID);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

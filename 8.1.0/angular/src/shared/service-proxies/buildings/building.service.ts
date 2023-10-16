@@ -116,4 +116,17 @@ export class BuildingService {
         )
 
     }
+
+    // Get All Buildings Except
+    getAllBuildingsExcept(id: number){
+        let url_ = this.url + `/api/services/app/Building/getAllBuildingsExcept?buildingId=${id}`;
+
+        return this.http.get(
+            url_,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
 }
