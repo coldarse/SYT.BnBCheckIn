@@ -5,6 +5,8 @@ import { finalize } from 'rxjs/operators';
 import { BuildingDto } from '@shared/service-proxies/buildings/model'
 import { BuildingService } from '@shared/service-proxies/buildings/building.service'
 import { CreateUpdateBuildingComponent } from '../buildings/create-update-building/create-update-building.component'
+import { UnitService } from '@shared/service-proxies/units/unit.service';
+import { SelectBuildingComponent } from './select-building/select-building.component';
 
 class PagedBuildingsRequestDto extends PagedRequestDto{
   keyword: string
@@ -23,6 +25,7 @@ export class BuildingsComponent extends PagedListingComponentBase<BuildingDto> {
   constructor(
     injector: Injector,
     private _buildingService: BuildingService,
+    private _unitService: UnitService,
     private _modalService: BsModalService
   ){
     super(injector);
@@ -63,6 +66,22 @@ export class BuildingsComponent extends PagedListingComponentBase<BuildingDto> {
     });
   }
 
+  private showSelectBuildingDialog(buildingId: number, buildings: any[], buildingName: string){
+    let selectBuildingDialog: BsModalRef;
+    selectBuildingDialog = this._modalService.show(
+      SelectBuildingComponent,
+      {
+        class: 'modal-lg',
+        initialState:{
+          buildingId: buildingId,
+          buildings: buildings,
+          buildingName: buildingName,
+          toDeleteId: buildingId
+        }
+      }
+    )
+  }
+
   clearFilters(): void {
     this.keyword = '';
     this.getDataPage(1);
@@ -74,10 +93,22 @@ export class BuildingsComponent extends PagedListingComponentBase<BuildingDto> {
       undefined,
       (result: boolean) => {
         if (result) {
-          this._buildingService.delete(entity.id).subscribe(() => {
-            abp.notify.success(this.l('SuccessfullyDeleted'));
-            this.refresh();
+          this._unitService.getAreThereAssignedUnits(entity.id).subscribe((data: any) => {
+            if(data.result){
+              this._buildingService.getAllBuildingsExcept(entity.id).subscribe((elem: any) => {
+                this.showSelectBuildingDialog(entity.id, elem.result, entity.name);
+              });
+            }
+            else{
+              this._buildingService.delete(entity.id).subscribe(() => {
+                this._unitService.deleteMasterUnit(entity.name).subscribe(() => {
+                  abp.notify.success(this.l('SuccessfullyDeleted'));
+                  this.refresh();
+                });
+              });
+            }
           });
+          
         }
       }
     );

@@ -116,4 +116,59 @@ export class UnitService {
         )
 
     }
+
+    // Update Master Unit
+    updateMasterUnitName(body: any){
+        let url_ = this.url + "/api/services/app/Unit/updateMasterUnitName";
+
+        return this.http.put(
+            url_,
+            body,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
+
+    // Delete Master Unit
+    deleteMasterUnit(name: string){
+        let url_ = this.url + `/api/services/app/Unit/deleteMasterUnit?input=${name}`;
+
+        return this.http.delete(
+            url_,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
+
+    // Get Assigned Units
+    getAreThereAssignedUnits(id: number){
+        let url_ = this.url + `/api/services/app/Unit/getAreThereAssignedUnits?buildingId=${id}`;
+
+        return this.http.get(
+            url_,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
+
+    // Update New Building Ids
+    updateNewBuilding(body: any){
+        let url_ = this.url + "/api/services/app/Unit/updateNewBuilding";
+
+        return this.http.put(
+            url_,
+            body,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
+
 }

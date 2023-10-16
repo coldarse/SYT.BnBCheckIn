@@ -60,14 +60,14 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       value: 30,
       day: '30 days'
     },
-    {
-      value: 60,
-      day: '60 days'
-    },
-    {
-      value: 90,
-      day: '90 days'
-    },
+    // {
+    //   value: 60,
+    //   day: '60 days'
+    // },
+    // {
+    //   value: 90,
+    //   day: '90 days'
+    // },
   ];
 
   single: any[] = [];
@@ -207,7 +207,6 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.arrayForExcel);
     const workbook: XLSX.WorkBook = XLSX.utils.book_new(); 
-    console.log(ws)
     // save to file
     XLSX.utils.book_append_sheet(workbook, ws, 'Sheet1');
     XLSX.writeFile(workbook, fileName);
@@ -251,7 +250,6 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.usage = JSON.stringify(result.result.nested);
       this.single = result.result.nested;
       this.forExcel = JSON.stringify(result.result.notNested);
-      console.log(this.forExcel)
     });
   }
 

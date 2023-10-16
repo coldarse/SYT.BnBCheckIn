@@ -117,7 +117,7 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
 
           let tempUnit = {
             id: element.id,
-            building: building.name,
+            building: building == undefined ? '' : building.name,
             buildingId: element.buildingId,
             unitNo: element.unitNo,
             status: element.status,

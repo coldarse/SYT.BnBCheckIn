@@ -24,9 +24,14 @@ namespace SYT.BnBCheckIn.Picos
                     x.Name.Contains(input.Keyword)).AsQueryable();
         }
 
-        public async Task<Pico> getPico(Guid id)
+        public async Task<Pico> getPicoByName(string pico)
         {
-            return await Repository.FirstOrDefaultAsync(x => x.Id == id);
+            return await Repository.FirstOrDefaultAsync(x => x.Name == pico);
+        }
+
+        public async Task<Pico> getPicoByID(Guid pico)
+        {
+            return await Repository.FirstOrDefaultAsync(x => x.Id == pico);
         }
     }
 }

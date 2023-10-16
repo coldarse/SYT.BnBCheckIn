@@ -50,6 +50,7 @@ import { UnitService } from '@shared/service-proxies/units/unit.service';
 
 import { BuildingsComponent } from './buildings/buildings.component';
 import { CreateUpdateBuildingComponent } from './buildings/create-update-building/create-update-building.component';
+import { SelectBuildingComponent } from './buildings/select-building/select-building.component';
 import { BuildingService } from '@shared/service-proxies/buildings/building.service';
 
 import { RFIDSComponent } from './rfids/rfids.component';
@@ -98,6 +99,7 @@ import { PicoService } from '@shared/service-proxies/picos/pico.service';
         CreateUpdateUnitComponent,
         BuildingsComponent,
         CreateUpdateBuildingComponent,
+        SelectBuildingComponent,
         RFIDSComponent,
         CreateUpdateRFIDComponent,
         PicosComponent,

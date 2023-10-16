@@ -60,7 +60,7 @@ namespace SYT.BnBCheckIn.Units
             try
             {
                 var rfid = await _rFIDAppService.getRFID(input.RFID);
-                var pico = await _picoAppService.getPico(input.PicoId);
+                var pico = await _picoAppService.getPicoByID(input.Pico);
 
                 Unit picounit = Repository.FirstOrDefault(u => u.Id.Equals(pico.UnitId));
                 Unit rfidunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));
@@ -110,6 +110,54 @@ namespace SYT.BnBCheckIn.Units
             {
                 verify.Error = ex.ToString();
                 return verify;
+            }
+        }
+
+        public async Task<bool> updateMasterUnitName(UpdateDeleteMasterUnitDto input)
+        {
+            var tempUnit = await Repository.FirstOrDefaultAsync(x => x.BuildingId.Equals(input.BuildingId));
+
+            tempUnit.UnitNo = input.Name + " Master";
+
+            var updateUnit = await Repository.UpdateAsync(tempUnit);
+
+            if (updateUnit != null) return true;
+
+            return false;
+        }
+
+        public async Task deleteMasterUnit(string input)
+        {
+            await Repository.DeleteAsync(x => x.UnitNo.Equals(input + " Master"));
+        }
+
+        public async Task<bool> getAreThereAssignedUnits(Guid buildingId)
+        {
+            var tempUnits = await Repository.GetAllListAsync(x => x.BuildingId.Equals(buildingId));
+
+            //tempUnits = tempUnits.Where(x => !x.UnitNo.ToLower().Contains("master")).ToList();
+
+            if (tempUnits.Count != 0) return true;
+            return false;
+        }
+
+        public async Task<bool> updateNewBuilding(UpdateBuildingIds input)
+        {
+            try
+            {
+                var tempUnits = await Repository.GetAllListAsync(x => x.BuildingId.Equals(input.buildingId));
+
+                foreach (var unit in tempUnits)
+                {
+                    unit.BuildingId = input.newBuildingId;
+                    await Repository.UpdateAsync(unit);
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
