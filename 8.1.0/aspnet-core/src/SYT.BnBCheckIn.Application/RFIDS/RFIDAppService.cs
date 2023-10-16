@@ -53,14 +53,14 @@ namespace SYT.BnBCheckIn.RFIDS
                 
             }
 
-            var mappQuery = orderedQuery.Select(a => new RFID()
+            var mapQuery = orderedQuery.Select(a => new RFID()
             {
                 Id = a.Id,
                 Value = a.Value,
                 UnitId = a.UnitId
             });
 
-            return mappQuery.AsQueryable();
+            return mapQuery.AsQueryable();
             
         }
 
