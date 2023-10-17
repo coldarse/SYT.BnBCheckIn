@@ -60,7 +60,7 @@ namespace SYT.BnBCheckIn.Units
             try
             {
                 var rfid = await _rFIDAppService.getRFID(input.RFID);
-                var pico = await _picoAppService.getPicoByID(input.Pico);
+                var pico = await _picoAppService.getPicoByID(input.picoId);
 
                 Unit picounit = Repository.FirstOrDefault(u => u.Id.Equals(pico.UnitId));
                 Unit rfidunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));
