@@ -2,7 +2,7 @@
     <section class='content-header'>
         <div class='container-fluid'>
             <div class='row'>
-                <div class='col-6'>
+                <div class='col-6' (click)="hideShowChart()">
                     <h1>{{ 'Usages' | localize }}</h1>
                 </div>
                 <div class='col-6 text-right' *ngIf='isButtonVisible("Create")'>
@@ -155,8 +155,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="LineChart" *ngIf="false">
+                <div class="card-body" *ngIf="hideChart">
+                    <div class="LineChart">
                         <ngx-charts-line-chart
                         [view]="view"
                         [scheme]="colorScheme"
