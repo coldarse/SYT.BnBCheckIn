@@ -198,11 +198,11 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.arrayForExcel = tempArr.filter((obj: any) => {
         return obj.unit === this.unitForExcel;
       });
-      fileName = `${this.unitForExcel}_${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
+      fileName = `${this.unitForExcel}_last_${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
     }
     else{
       this.arrayForExcel = JSON.parse(this.forExcel);
-      `${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
+      fileName = `${this.filename}_last_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
     }
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.arrayForExcel);
