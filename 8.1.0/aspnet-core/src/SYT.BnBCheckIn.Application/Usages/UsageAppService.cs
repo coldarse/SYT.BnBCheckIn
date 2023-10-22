@@ -117,12 +117,12 @@ namespace SYT.BnBCheckIn.Usages
                                 Building = u.Building,
                                 StartTime = u.StartTime,
                                 EndTime = u.EndTime,
-                                Duration = (float)ts.TotalMinutes,
+                                Duration = ts.TotalSeconds,
                             });
                         }
                         else
                         {
-                            tempByDate[dateindex].Duration += (float)ts.TotalMinutes;
+                            tempByDate[dateindex].Duration += ts.TotalSeconds;
                         }
                     }
 
@@ -151,7 +151,7 @@ namespace SYT.BnBCheckIn.Usages
                 {
                     foreach (var b in a.Series)
                     {
-                        TimeSpan time = TimeSpan.FromMinutes(b.value);
+                        TimeSpan time = TimeSpan.FromSeconds(b.value);
                         notNested.Add(new DayUsageWithUnitsNotNested()
                         {
                             Unit = a.Name,

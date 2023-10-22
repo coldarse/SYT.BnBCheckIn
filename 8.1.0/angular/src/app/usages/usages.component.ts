@@ -262,4 +262,41 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   capitalizeFirstLetter(str: string){
     return str.charAt(0).toUpperCase()+str.slice(1);
   }
+
+  formatTime(val){
+    //initiate seconds
+    let seconds = val; 
+    
+    //days 
+    let days = Math.floor(seconds/(24*3600)); 
+    let days_string = days.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    seconds -= days*24*3600; 
+    
+    //hours 
+    let hours = Math.floor(seconds/3600);
+    let hours_string = hours.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    seconds -= hours*3600; 
+    
+    //minutes 
+    let minutes = Math.floor(seconds/60); 
+    let minutes_string = minutes.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    seconds -= minutes*60; 
+
+    let seconds_string = seconds.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+
+    let newVal = days_string + ':' + hours_string + ':' + minutes_string + ':' + seconds_string;
+    return newVal;
+  }
 }

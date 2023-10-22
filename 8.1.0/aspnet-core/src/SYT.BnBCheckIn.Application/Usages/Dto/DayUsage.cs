@@ -7,7 +7,7 @@ namespace SYT.BnBCheckIn.Usages.Dto
 	public class DayUsage
 	{
 		public string name { get; set; }
-		public float value { get; set; }
+		public double value { get; set; }
 		public string start { get; set; }
 		public string end { get; set; }
     }
@@ -21,7 +21,7 @@ namespace SYT.BnBCheckIn.Usages.Dto
 		public string Building { get; set; }
 		public DateTime StartTime { get; set; }
 		public DateTime EndTime { get; set; }
-		public float Duration { get; set; }
+		public double Duration { get; set; }
 	}
 
 	public class DayUsageWithUnits
