@@ -8,15 +8,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SYT.BnBCheckIn.Usages.Dto;
+using SYT.BnBCheckIn.Units;
+using SYT.BnBCheckIn.Units.Dto;
 
 namespace SYT.BnBCheckIn.Usages
 {
     public class UsageAppService : CrudAppService<Usage, UsageDto, Guid, PagedUsageResultRequestDto>
     {
+        private readonly IRepository<Unit, Guid> _unitRepository;
 
-        public UsageAppService(IRepository<Usage, Guid> repository) : base(repository)
+        public UsageAppService(IRepository<Usage, Guid> repository, IRepository<Unit, Guid> unitRepository) : base(repository)
         {
+            _unitRepository = unitRepository;
         }
+
         protected override IQueryable<Usage> CreateFilteredQuery(PagedUsageResultRequestDto input)
         {
             return Repository.GetAllIncluding()
@@ -27,8 +32,20 @@ namespace SYT.BnBCheckIn.Usages
         public async Task<Usage> endUsage(Guid id)
         {
             var usage = await Repository.FirstOrDefaultAsync(x => x.Id == id);
+
             usage.EndTime = DateTime.UtcNow;
-            Repository.Update(usage);
+
+            await Repository.UpdateAsync(usage);
+
+            var tempUnit = await _unitRepository.FirstOrDefaultAsync(x => x.UnitNo.Equals(usage.Unit));
+
+            if(tempUnit != null)
+            {
+                tempUnit.Status = "Vacant";
+
+                await _unitRepository.UpdateAsync(tempUnit);
+            }
+
             return usage;
         }
 
@@ -101,24 +118,60 @@ namespace SYT.BnBCheckIn.Usages
 
                     foreach (var u in v.Infos)
                     {
-
-
                         TimeSpan ts = u.EndTime - u.StartTime;
 
                         int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
                         if (dateindex == -1)
                         {
-                            tempByDate.Add(new tempDaysUsage
+                            //Check if duration is more than 1 day
+                            if(ts.TotalSeconds > 86400)
                             {
-                                Id = u.Id,
-                                Unit = u.Unit,
-                                Pico = u.Pico,
-                                RFID = u.RFID,
-                                Building = u.Building,
-                                StartTime = u.StartTime,
-                                EndTime = u.EndTime,
-                                Duration = ts.TotalSeconds,
-                            });
+                                //Get how many days
+                                double duration_days = ts.TotalSeconds / 86400;
+
+                                for (int day = 0; day <= duration_days; day++)
+                                {
+                                    DateTime tempStartDate = u.StartTime.AddDays(day);
+                                    if (day != 0)
+                                    {
+                                        tempStartDate = new DateTime(tempStartDate.Date.Year, tempStartDate.Date.Month, tempStartDate.Date.Day, 00, 00, 00);
+                                    }
+                                    DateTime tempEndDate = u.EndTime;
+                                    if (tempStartDate.Day != u.EndTime.Day)
+                                    {
+                                        tempEndDate = new DateTime(tempStartDate.Date.Year, tempStartDate.Date.Month, tempStartDate.Date.Day, 23, 59, 59);
+                                    }
+
+                                    TimeSpan tempSpan = tempEndDate - tempStartDate;
+                                    double tempDuration = tempSpan.TotalSeconds;
+
+                                    tempByDate.Add(new tempDaysUsage
+                                    {
+                                        Id = u.Id,
+                                        Unit = u.Unit,
+                                        Pico = u.Pico,
+                                        RFID = u.RFID,
+                                        Building = u.Building,
+                                        StartTime = tempStartDate,
+                                        EndTime = tempEndDate,
+                                        Duration = tempDuration,
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                tempByDate.Add(new tempDaysUsage
+                                {
+                                    Id = u.Id,
+                                    Unit = u.Unit,
+                                    Pico = u.Pico,
+                                    RFID = u.RFID,
+                                    Building = u.Building,
+                                    StartTime = u.StartTime,
+                                    EndTime = u.EndTime,
+                                    Duration = ts.TotalSeconds,
+                                });
+                            }
                         }
                         else
                         {
@@ -158,7 +211,7 @@ namespace SYT.BnBCheckIn.Usages
                             Building = a.Building,
                             StartTime = b.start,
                             EndTime = b.end,
-                            Duration = time.ToString("dd':'hh':'mm':'ss"),
+                            Duration = time.ToString("hh':'mm':'ss"),
                         });
                     }
                 }

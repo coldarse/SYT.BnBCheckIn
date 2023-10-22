@@ -100,6 +100,8 @@ namespace SYT.BnBCheckIn.Units
                     CheckInRef = ""
                 });
 
+                var updateStatus = await updateUnitStatus(rfid.UnitId, "Occupied");
+
                 verify.Validity = true;
                 verify.UsageId = usage.Id;
                 verify.UnitRFIDs = rfids;
@@ -111,6 +113,19 @@ namespace SYT.BnBCheckIn.Units
                 verify.Error = ex.ToString();
                 return verify;
             }
+        }
+
+        private async Task<bool> updateUnitStatus(Guid id, string status)
+        {
+            var tempUnit = await Repository.FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+            tempUnit.Status = status;
+
+            var updateUnit = await Repository.UpdateAsync(tempUnit);
+
+            if (updateUnit != null) return true;
+
+            return false;
         }
 
         public async Task<bool> updateMasterUnitName(UpdateDeleteMasterUnitDto input)
@@ -160,6 +175,5 @@ namespace SYT.BnBCheckIn.Units
                 return false;
             }
         }
-
     }
 }

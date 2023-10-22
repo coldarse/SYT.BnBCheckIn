@@ -62,14 +62,14 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       value: 30,
       day: '30 days'
     },
-    // {
-    //   value: 60,
-    //   day: '60 days'
-    // },
-    // {
-    //   value: 90,
-    //   day: '90 days'
-    // },
+    {
+      value: 60,
+      day: '60 days'
+    },
+    {
+      value: 90,
+      day: '90 days'
+    },
   ];
 
   single: any[] = [];
@@ -268,12 +268,12 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     let seconds = val; 
     
     //days 
-    let days = Math.floor(seconds/(24*3600)); 
-    let days_string = days.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-    seconds -= days*24*3600; 
+    // let days = Math.floor(seconds/(24*3600)); 
+    // let days_string = days.toLocaleString('en-US', {
+    //   minimumIntegerDigits: 2,
+    //   useGrouping: false
+    // });
+    // seconds -= days*24*3600; 
     
     //hours 
     let hours = Math.floor(seconds/3600);
@@ -296,7 +296,11 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       useGrouping: false
     });
 
-    let newVal = days_string + ':' + hours_string + ':' + minutes_string + ':' + seconds_string;
+    let newVal = 
+          // days_string + ':' + 
+          hours_string + ':' + 
+          minutes_string + ':' + 
+          seconds_string;
     return newVal;
   }
 }
