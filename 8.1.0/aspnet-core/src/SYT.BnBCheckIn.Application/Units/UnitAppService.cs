@@ -53,14 +53,14 @@ namespace SYT.BnBCheckIn.Units
             return temp;
         }
 
-        public async Task<VerifyDto> Verify(VerifyComponentsDto input)
+        public async Task<VerifyDto> Verify(VerifyComponentsStringDto input)
         {
             VerifyDto verify = new VerifyDto();
 
             try
             {
                 var rfid = await _rFIDAppService.getRFID(input.RFID);
-                var pico = await _picoAppService.getPicoByID(input.picoId);
+                var pico = await _picoAppService.getPicoByName(input.picoId);
 
                 Unit picounit = Repository.FirstOrDefault(u => u.Id.Equals(pico.UnitId));
                 Unit rfidunit = Repository.FirstOrDefault(u => u.Id.Equals(rfid.UnitId));

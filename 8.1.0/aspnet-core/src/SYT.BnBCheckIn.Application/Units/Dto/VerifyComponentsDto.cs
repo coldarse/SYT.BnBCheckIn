@@ -7,5 +7,11 @@ namespace SYT.BnBCheckIn.Units.Dto
 		public string RFID { get; set; }
 	}
 
+    public class VerifyComponentsStringDto
+    {
+        public string picoId { get; set; }
+        public string RFID { get; set; }
+    }
+
 }
 
