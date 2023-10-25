@@ -12,6 +12,7 @@ using SYT.BnBCheckIn.Picos;
 using SYT.BnBCheckIn.RFIDS;
 using SYT.BnBCheckIn.Usages;
 using SYT.BnBCheckIn.Buildings;
+using System.Threading;
 
 namespace SYT.BnBCheckIn.Units
 {
@@ -89,13 +90,17 @@ namespace SYT.BnBCheckIn.Units
 
                 if (pico.UnitId != rfid.UnitId) return verify;
 
+                DateTime DateTimeUTC = DateTime.UtcNow;
+                TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+                DateTime cstDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUTC, cstZone);
+
                 var usage = _usageAppService.Create(new Usages.Dto.UsageDto
                 {
                     Unit = unit.UnitNo,
                     Pico = pico.Name,
                     RFID = rfid.Value,
                     Building = building.Name,
-                    StartTime = DateTime.UtcNow,
+                    StartTime = cstDateTime,
                     EndTime = DateTime.MinValue,
                     CheckInRef = ""
                 });

@@ -41,13 +41,17 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   showXAxisLabel: boolean = true;
   xAxisLabel: string = 'Date';
   yAxisLabel: string = 'Hours';
-  timeline: boolean = true;
+  yAxisTicks = [0,3,6,9,12,15,18,21,24];
+  yScaleMax = 24;
+  yScaleMin = 0;
 
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
   hideChart = false;
+
+  
 
   noOfDays = [
     {

@@ -33,7 +33,11 @@ namespace SYT.BnBCheckIn.Usages
         {
             var usage = await Repository.FirstOrDefaultAsync(x => x.Id == id);
 
-            usage.EndTime = DateTime.UtcNow;
+            DateTime DateTimeUTC = DateTime.UtcNow;
+            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+            DateTime cstDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUTC, cstZone);
+
+            usage.EndTime = cstDateTime;
 
             await Repository.UpdateAsync(usage);
 
