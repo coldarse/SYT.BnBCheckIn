@@ -21,3 +21,11 @@ export interface PagedUsageResultRequestDto extends PagedAndSortedResultRequestD
     endTime?: string;
     checkInRef?: string;
 }
+
+
+export interface PagedUpdatedUsageResultRequestDto extends PagedAndSortedResultRequestDto{
+    unit?: string;
+    startTime?: string;
+    endTime?: string;
+    checkInRef?: string;
+}

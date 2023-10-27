@@ -9,7 +9,9 @@ import * as XLSX from 'xlsx';
 import * as moment from 'moment'; 
 
 class PagedUsagesRequestDto extends PagedRequestDto{
-  keyword: string
+  unit: string;
+  startTime: string;
+  endTime: string;
 }
 
 @Component({
@@ -19,7 +21,9 @@ class PagedUsagesRequestDto extends PagedRequestDto{
 })
 export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
 
-  keyword = '';
+  unit = '';
+  startTime = '';
+  endTime = '';
   usages: any[] = [];
   view: any[] = [800, 400];
 
@@ -49,7 +53,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
-  hideChart = false;
+  hideChart = true;
 
   
 
@@ -87,6 +91,9 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     private _modalService: BsModalService
   ){
     super(injector);
+
+    this.startTime = new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000)).toLocaleDateString('en-CA');
+    this.endTime = new Date().toLocaleDateString('en-CA');
   }
 
   createUsage(){
@@ -125,7 +132,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   }
 
   clearFilters(): void {
-    this.keyword = '';
+    this.unit = '';
     this.getDataPage(1);
   }
 
@@ -153,46 +160,50 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     pageNumber: number,
     finishedCallback: Function
   ): void {
-    request.keyword = this.keyword;
-    // this._usageService
-    // .getAll(
-    //   request
-    // ).pipe(
-    //   finalize(() => {
-    //     finishedCallback();
-    //   })
-    // )
-    // .subscribe((result: any) => {
-    //   this.usages = [];
-    //     result.result.items.forEach((element: UsageDto) => {
-
-    //       let tempUsage = {
-    //         id: element.id,
-    //         unit: element.unit,
-    //         pico: element.pico,
-    //         rFID: element.rfid,
-    //         building: element.building,
-    //         startTime: element.startTime,
-    //         endTime: element.endTime,
-    //         checkInRef: element.checkInRef,
-    //       }
-
-    //       this.usages.push(tempUsage);
-    //     });
+    request.unit = this.unit;
+    request.startTime = this.startTime;
+    request.endTime = this.endTime;
     this._usageService
-    .getDayUsage(7).pipe(
+    .getAllUpdatedUsage(
+      request
+    ).pipe(
       finalize(() => {
         finishedCallback();
       })
-    ).subscribe((result: any) => {
-      this.buildings = [...new Set(result.result.nested.map(item => item.building))];
-      this.buildings.unshift('All');
-      this.usage = JSON.stringify(result.result.nested);
-      this.single = result.result.nested;
-      this.forExcel = result.result.notNested;
+    )
+    .subscribe((result: any) => {
+      this.usages = [];
+      result.result.items.forEach((element: any) => {
+        this.usages.push(element);
+      });
+      this._usageService
+        .getDayUsage(7).pipe(
+          finalize(() => {
+            finishedCallback();
+          })
+        ).subscribe((result_day: any) => {
+          this.buildings = [...new Set(result_day.result.nested.map(item => item.building))];
+          this.buildings.unshift('All');
+          this.units = [...new Set(result_day.result.nested.map(item => item.name))];
+          this.units.unshift('All');
+
+          let formatted_value = result_day.result.nested;
+
+          formatted_value.forEach((elem: any) => {
+            elem.series.forEach(element => {
+              element.value = (element.value / 60) / 60;
+            });
+          });
+
+          this.usage = JSON.stringify(formatted_value);
+          this.single = formatted_value;
+
+          console.log(formatted_value);
+          this.forExcel = result_day.result.notNested;
+
+          this.showPaging(result.result, pageNumber);
+        });
     });
-      // this.showPaging(result.result, pageNumber);
-    // });
     
   }
 
@@ -258,7 +269,16 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.units = [...new Set(result.result.nested.map(item => item.name))];
       this.units.unshift('All');
       this.usage = JSON.stringify(result.result.nested);
-      this.single = result.result.nested;
+      let formatted_value = result.result.nested;
+
+          formatted_value.forEach((elem: any) => {
+            elem.series.forEach(element => {
+              element.value = (element.value / 60) / 60;
+            });
+          });
+
+          this.usage = JSON.stringify(formatted_value);
+          this.single = formatted_value;
       this.forExcel = JSON.stringify(result.result.notNested);
     });
   }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Abp.Application.Services.Dto;
 
 namespace SYT.BnBCheckIn.Usages.Dto
 {
@@ -51,5 +52,11 @@ namespace SYT.BnBCheckIn.Usages.Dto
         public List<DayUsageWithUnits> nested { get; set; }
 		public List<DayUsageWithUnitsNotNested> notNested { get; set; }
     }
+
+	public class UsageDataTable
+	{
+		public List<DayUsageWithUnitsNotNested> notNested { get; set; }
+		public string Duration { get; set; }
+	}
 }
 

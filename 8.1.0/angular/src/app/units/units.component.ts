@@ -21,6 +21,7 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
   keyword = '';
   units: any[] = [];
   buildings: any[] = [];
+  statusCounts: any;
 
   constructor(
     injector: Injector,
@@ -126,7 +127,11 @@ export class UnitsComponent extends PagedListingComponentBase<UnitDto> {
 
           this.units.push(tempUnit);
         });
-        this.showPaging(result.result, pageNumber);
+
+        this._unitService.getStatusCounts().subscribe((stats: any) => {
+          this.statusCounts = stats.result;
+          this.showPaging(result.result, pageNumber);
+        });
       });
     });
   }

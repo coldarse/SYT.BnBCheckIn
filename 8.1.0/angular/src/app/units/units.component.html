@@ -19,7 +19,26 @@
             <div class='card'>
                 <div class='card-header'>
                     <div class='row'>
-                        <div class='col-md-6'>&emsp;</div>
+                        <div class='col-md-6'>
+                            <div class="row" style="margin-right: 1.5rem;">
+                                <div class="col-sm-3 text-center">
+                                    <h6 style="text-decoration: underline;">Vacant</h6>
+                                    <h6><span class="badge badge-success">{{statusCounts.vacant}}</span></h6>
+                                </div>
+                                <div class="col-sm-3 text-center">
+                                    <h6 style="text-decoration: underline;">Occupied</h6>
+                                    <h6><span class="badge badge-warning">{{statusCounts.occupied}}</span></h6>
+                                </div>
+                                <div class="col-sm-3 text-center">
+                                    <h6 style="text-decoration: underline;">Cleaning</h6>
+                                    <h6><span class="badge badge-info">{{statusCounts.cleaning}}</span></h6>
+                                </div>
+                                <div class="col-sm-3 text-center">
+                                    <h6 style="text-decoration: underline;">Unavailable</h6>
+                                    <h6><span class="badge badge-secondary">{{statusCounts.unavailable}}</span></h6>
+                                </div>
+                            </div>
+                        </div>
                         <div class='col-md-6'>
                             <div class='input-group'>
                                 <div class='input-group-prepend'>

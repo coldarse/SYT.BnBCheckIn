@@ -54,6 +54,20 @@ namespace SYT.BnBCheckIn.Units
             return temp;
         }
 
+        public async Task<StatusCount> GetStatusCount()
+        {
+            var all_units = await Repository.GetAllListAsync(x => !x.UnitNo.ToLower().Contains("master"));
+
+            StatusCount counts = new StatusCount();
+
+            counts.Vacant = all_units.Where(v => v.Status == "Vacant").Count();
+            counts.Occupied = all_units.Where(v => v.Status == "Occupied").Count();
+            counts.Cleaning = all_units.Where(v => v.Status == "Cleaning").Count();
+            counts.Unavailable = all_units.Where(v => v.Status == "Unavailable").Count();
+
+            return counts;
+        }
+
         public async Task<VerifyDto> Verify(VerifyComponentsStringDto input)
         {
             VerifyDto verify = new VerifyDto();

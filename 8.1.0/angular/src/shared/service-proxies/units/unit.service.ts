@@ -171,4 +171,17 @@ export class UnitService {
         )
     }
 
+    // Get Unit Status Counts
+    getStatusCounts(){
+        let url_ = this.url + `/api/services/app/Unit/GetStatusCount`;
+
+        return this.http.get(
+            url_,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
+
 }

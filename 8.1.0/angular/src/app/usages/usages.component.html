@@ -6,20 +6,39 @@
                     <h1>{{ 'Usages' | localize }}</h1>
                 </div>
                 <div class='col-6 text-right' *ngIf='isButtonVisible("Create")'>
-                    <a href='javascript:;' class='btn bg-blue' (click)='createUsage()'>
+                    <!-- <a href='javascript:;' class='btn bg-blue' (click)='createUsage()'>
                         <i class='fa fa-plus-square'></i>
                         {{ 'Create' | localize }}
-                    </a>
+                    </a> -->
                 </div>
             </div>
         </div>
     </section>
-    <!-- <section class='content px-2'>
+    <section class='content px-2'>
         <div class='container-fluid'>
             <div class='card'>
                 <div class='card-header'>
                     <div class='row'>
-                        <div class='col-md-6'>&emsp;</div>
+                        <div class='col-md-6'>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input 
+                                        type="date"
+                                        class="form-control"
+                                        name="startDate"
+                                        [(ngModel)]='startTime'
+                                    >
+                                </div>
+                                <div class="col-6">
+                                    <input 
+                                        type="date"
+                                        class="form-control"
+                                        name="endDate"
+                                        [(ngModel)]='endTime'
+                                    >
+                                </div>
+                            </div>
+                        </div>
                         <div class='col-md-6'>
                             <div class='input-group'>
                                 <div class='input-group-prepend'>
@@ -34,9 +53,9 @@
                                 <input
                                         type='text'
                                         class='form-control'
-                                        name='keyword'
+                                        name='unit'
                                         [placeholder]='"SearchWithThreeDot" | localize'
-                                        [(ngModel)]='keyword'
+                                        [(ngModel)]='unit'
                                         (keyup.enter)='getDataPage(1)'
                                 />
                             </div>
@@ -49,13 +68,14 @@
                             <thead class='bg-light'>
                             <tr>
                                 <th>{{ 'Unit' | localize }}</th>
-                                <th>{{ 'Pico' | localize }}</th>
-                                <th>{{ 'RFID' | localize }}</th>
+                                <!-- <th>{{ 'Pico' | localize }}</th> -->
+                                <!-- <th>{{ 'RFID' | localize }}</th> -->
                                 <th>{{ 'Building' | localize }}</th>
-                                <th>{{ 'StartTime' | localize }}</th>
-                                <th>{{ 'EndTime' | localize }}</th>
-                                <th>{{ 'CheckInRef' | localize }}</th>
-                                <th style='width: 310px;' *ngIf='isButtonVisible("Edit") && isButtonVisible("Delete")'>{{ 'Actions' | localize }}</th>
+                                <th>{{ 'Duration' | localize }}</th>
+                                <!-- <th>{{ 'EndTime' | localize }}</th> -->
+                                <!-- <th>{{ 'CheckInRef' | localize }}</th> -->
+                                <th>{{ 'DateTime' | localize }}</th>
+                                <!-- <th style='width: 310px;' *ngIf='isButtonVisible("Edit") && isButtonVisible("Delete")'>{{ 'Actions' | localize }}</th> -->
                             </tr>
                             </thead>
                             <tbody>
@@ -72,13 +92,13 @@
                 '
                             >
                                 <td>{{ usage.unit }}</td>
-                                <td>{{ usage.pico }}</td>
-                                <td>{{ usage.rFID }}</td>
+                                <!-- <td>{{ usage.pico }}</td> -->
+                                <!-- <td>{{ usage.rFID }}</td> -->
                                 <td>{{ usage.building }}</td>
+                                <td>{{ usage.duration }}</td>
+                                <!-- <td>{{ (usage.endTime | date:'medium') == 'Jan 1, 1, 12:00:00 AM' ? '-' : (usage.endTime | date:'medium') }}</td> -->
                                 <td>{{ usage.startTime | date:'medium' }}</td>
-                                <td>{{ (usage.endTime | date:'medium') == 'Jan 1, 1, 12:00:00 AM' ? '-' : (usage.endTime | date:'medium') }}</td>
-                                <td>{{ usage.checkInRef }}</td>
-                                <td *ngIf='isButtonVisible("Edit") || isButtonVisible("Delete")'>
+                                <!-- <td *ngIf='isButtonVisible("Edit") || isButtonVisible("Delete")'>
                                     <button
                                             type='button'
                                             class='btn btn-sm bg-secondary'
@@ -97,7 +117,7 @@
                                         <i class='fas fa-trash'></i>
                                         {{ 'Delete' | localize }}
                                     </button>
-                                </td>
+                                </td> -->
                             </tr>
                             </tbody>
                         </table>
@@ -128,27 +148,27 @@
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>
     <section class="content px-2">
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-4">
                             <select class="form-select form-control" (change)="selectedUnit($event)" [disabled]="units.length == 0">
                                 <option *ngFor="let item of units" value="{{item}}" >
                                     {{item}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-1">
+                        <div class="col-md-4">
                             <select class="form-select form-control" (change)="selectedDays($event)">
                                 <option value="{{days.value}}" *ngFor="let days of noOfDays">
                                     {{days.day}}
                                 </option>
                             </select>
                         </div>
-                        <div class="col-3">
+                        <div class="col-md-4">
                             <button style="margin-bottom: 2rem;" type="button" class="btn btn-success" (click)="exportexcel()">
                                 <i class="fas fa-file-download"></i>&nbsp;Download Records
                             </button>

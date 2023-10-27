@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, retry, throwError } from 'rxjs';
-import { PagedUsageResultRequestDto, UsageDto } from './model';
+import { PagedUpdatedUsageResultRequestDto, PagedUsageResultRequestDto, UsageDto } from './model';
 import { AppConsts } from '@shared/AppConsts';
 
 @Injectable()
@@ -103,6 +103,41 @@ export class UsageService {
         )
     }
 
+    // Get All Updated Usages
+    getAllUpdatedUsage(body: PagedUpdatedUsageResultRequestDto){
+        let url_ = this.url + "/api/services/app/Usage/GetUpdatedAll?";
+
+        if (body.unit === null)
+            throw new Error("The parameter 'unit' cannot be null.");
+        else if (body.unit !== undefined)
+            url_ += "Unit=" + encodeURIComponent("" + body.unit) + "&";
+
+        if (body.startTime === null)
+            throw new Error("The parameter 'startTime' cannot be null.");
+        else if (body.startTime !== undefined)
+            url_ += "StartTime=" + encodeURIComponent("" + body.startTime) + "&";
+
+        if (body.endTime === null)
+            throw new Error("The parameter 'endTime' cannot be null.");
+        else if (body.endTime !== undefined)
+            url_ += "EndTime=" + encodeURIComponent("" + body.endTime) + "&";
+
+        if (body.skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + body.skipCount) + "&";
+
+
+        url_ = url_.replace(/[?&]$/, "");
+
+
+        return this.http.get(
+            url_ + `&MaxResultCount=10`,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
+
     //Usage Report
     getDayUsage(days: number){
         return this.http.get(
@@ -113,4 +148,6 @@ export class UsageService {
             catchError(this.handleError),
         )
     }
+    
+
 }
