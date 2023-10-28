@@ -7,6 +7,7 @@ import { UsageService } from '@shared/service-proxies/usages/usage.service'
 import { CreateUpdateUsageComponent } from '../usages/create-update-usage/create-update-usage.component'
 import * as XLSX from 'xlsx';
 import * as moment from 'moment'; 
+import * as shape from 'd3-shape';
 
 class PagedUsagesRequestDto extends PagedRequestDto{
   unit: string;
@@ -25,15 +26,19 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   startTime = '';
   endTime = '';
   usages: any[] = [];
-  view: any[] = [800, 400];
+  // view: any[] = [800, 400];
 
   EXCEL_EXTENSION = '.xlsx';
   filename = 'Usage';
   days = 7;
 
+  default_unit = "All";
+  default_days = 7;
+
   usage: string = '';
   forExcel: string = '';
-  unitForExcel: string = ''
+  unitForExcel: string = '';
+  totalduration: string = '';
 
   // options
   legend: boolean = true;
@@ -45,16 +50,18 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   showXAxisLabel: boolean = true;
   xAxisLabel: string = 'Date';
   yAxisLabel: string = 'Hours';
-  yAxisTicks = [0,3,6,9,12,15,18,21,24];
   yScaleMax = 24;
   yScaleMin = 0;
+  curve = shape.curveMonotoneX;
 
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
   hideChart = true;
-
+  selectedHours = true;
+  selectedMinutes = false;
+  selectedSeconds = false;
   
 
   noOfDays = [
@@ -173,9 +180,11 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     )
     .subscribe((result: any) => {
       this.usages = [];
-      result.result.items.forEach((element: any) => {
+      result.result.notNested.items.forEach((element: any) => {
         this.usages.push(element);
       });
+      this.totalduration = result.result.duration;
+      console.log(this.totalduration);
       this._usageService
         .getDayUsage(7).pipe(
           finalize(() => {
@@ -186,7 +195,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
           this.buildings.unshift('All');
           this.units = [...new Set(result_day.result.nested.map(item => item.name))];
           this.units.unshift('All');
-
+          this.usage = JSON.stringify(result_day.result.nested);
           let formatted_value = result_day.result.nested;
 
           formatted_value.forEach((elem: any) => {
@@ -195,13 +204,16 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
             });
           });
 
-          this.usage = JSON.stringify(formatted_value);
+          
           this.single = formatted_value;
 
           console.log(formatted_value);
           this.forExcel = result_day.result.notNested;
 
-          this.showPaging(result.result, pageNumber);
+          this.default_days = 7;
+          this.default_unit = 'All';
+
+          this.showPaging(result.result.notNested, pageNumber);
         });
     });
     
@@ -269,16 +281,17 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.units = [...new Set(result.result.nested.map(item => item.name))];
       this.units.unshift('All');
       this.usage = JSON.stringify(result.result.nested);
+      console.log(this.usage);
       let formatted_value = result.result.nested;
 
-          formatted_value.forEach((elem: any) => {
-            elem.series.forEach(element => {
-              element.value = (element.value / 60) / 60;
-            });
-          });
+      formatted_value.forEach((elem: any) => {
+        elem.series.forEach(element => {
+          element.value = (element.value / 60) / 60;
+        });
+      });
 
-          this.usage = JSON.stringify(formatted_value);
-          this.single = formatted_value;
+      // this.usage = JSON.stringify(formatted_value);
+      this.single = formatted_value;
       this.forExcel = JSON.stringify(result.result.notNested);
     });
   }
@@ -287,44 +300,57 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     return str.charAt(0).toUpperCase()+str.slice(1);
   }
 
-  formatTime(val){
-    //initiate seconds
-    let seconds = val; 
-    
-    //days 
-    // let days = Math.floor(seconds/(24*3600)); 
-    // let days_string = days.toLocaleString('en-US', {
-    //   minimumIntegerDigits: 2,
-    //   useGrouping: false
-    // });
-    // seconds -= days*24*3600; 
-    
-    //hours 
-    let hours = Math.floor(seconds/3600);
-    let hours_string = hours.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-    seconds -= hours*3600; 
-    
-    //minutes 
-    let minutes = Math.floor(seconds/60); 
-    let minutes_string = minutes.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-    seconds -= minutes*60; 
+  displayBy(filter: string){
+    if(filter == 'hours'){
+      this.selectedHours = true;
+      this.selectedMinutes = false;
+      this.selectedSeconds = false;
 
-    let seconds_string = seconds.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
+      let formatted_value: [] = JSON.parse(this.usage);
+      console.log(formatted_value);
+      formatted_value.forEach((elem: any) => {
+        elem.series.forEach(element => {
+          element.value = (element.value / 60) / 60;
+        });
+      });
+      this.single = formatted_value;
 
-    let newVal = 
-          // days_string + ':' + 
-          hours_string + ':' + 
-          minutes_string + ':' + 
-          seconds_string;
-    return newVal;
+      this.yAxisLabel = 'Hours';
+      this.yScaleMax = 24;
+      this.yScaleMin = 0;
+    }
+    else if(filter == 'minutes'){
+      this.selectedHours = false;
+      this.selectedMinutes = true;
+      this.selectedSeconds = false;
+      
+      let formatted_value: [] = JSON.parse(this.usage);
+      console.log(formatted_value);
+      formatted_value.forEach((elem: any) => {
+        elem.series.forEach(element => {
+          element.value = element.value / 60;
+        });
+      });
+      this.single = formatted_value;
+
+      this.yAxisLabel = 'Minutes';
+      this.yScaleMax = 1440;
+      this.yScaleMin = 0;
+    }
+    else if(filter == 'seconds'){
+      this.selectedHours = false;
+      this.selectedMinutes = false;
+      this.selectedSeconds = true;
+      
+      let formatted_value: [] = JSON.parse(this.usage);
+      console.log(formatted_value);
+      this.single = formatted_value;
+
+      this.yAxisLabel = 'Seconds';
+      this.yScaleMax = 86400;
+      this.yScaleMin = 0;
+    }
   }
+
+  
 }

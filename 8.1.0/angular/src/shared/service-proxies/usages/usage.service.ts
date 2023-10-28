@@ -105,7 +105,7 @@ export class UsageService {
 
     // Get All Updated Usages
     getAllUpdatedUsage(body: PagedUpdatedUsageResultRequestDto){
-        let url_ = this.url + "/api/services/app/Usage/GetUpdatedAll?";
+        let url_ = this.url + "/api/services/app/Usage/GetNotNestedUsage?";
 
         if (body.unit === null)
             throw new Error("The parameter 'unit' cannot be null.");

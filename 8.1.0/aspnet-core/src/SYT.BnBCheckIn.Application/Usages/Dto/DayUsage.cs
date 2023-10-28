@@ -55,8 +55,10 @@ namespace SYT.BnBCheckIn.Usages.Dto
 
 	public class UsageDataTable
 	{
-		public List<DayUsageWithUnitsNotNested> notNested { get; set; }
+		public PagedResultDto<DayUsageWithUnitsNotNested> notNested { get; set; }
 		public string Duration { get; set; }
 	}
+
+
 }
 

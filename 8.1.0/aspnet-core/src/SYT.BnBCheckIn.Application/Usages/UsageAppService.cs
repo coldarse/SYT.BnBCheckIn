@@ -31,51 +31,33 @@ namespace SYT.BnBCheckIn.Usages
                     x.CheckInRef.Contains(input.Keyword)).AsQueryable();
         }
 
-        public async Task<PagedUsageResultDto<DayUsageWithUnitsNotNested>> GetUpdatedAll(PagedUpdatedUsageResultRequestDto input)
-        {
-            try
-            {
-                var tempUsages = await GetNotNestedUsage(new DateRange()
-                {
-                    startDate = input.StartTime,
-                    endDate = input.EndTime
-                });
+       
+        //private async Task<PagedResultDto<DayUsageWithUnitsNotNested>> GetUpdatedAll(PagedUpdatedUsageResultRequestDto input)
+        //{
+        //    try
+        //    {
+        //        var tempUsages = await GetNotNestedUsage(new DateRange()
+        //        {
+        //            startDate = input.StartTime,
+        //            endDate = input.EndTime
+        //        });
 
-                tempUsages.notNested = tempUsages.notNested.WhereIf(input.Unit != null, x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
+        //        tempUsages.notNested = tempUsages.notNested.WhereIf(input.Unit != null, x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
 
-                var totalCount = tempUsages.notNested.Count();
+        //        var totalCount = tempUsages.notNested.Count();
 
-                return new PagedUsageResultDto<DayUsageWithUnitsNotNested>(
-                    totalCount,
-                    tempUsages.notNested,
-                    tempUsages.Duration
-                );
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+        //        return new PagedResultDto<DayUsageWithUnitsNotNested>(
+        //            totalCount,
+        //            tempUsages.notNested
+        //        );
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return null;
+        //    }
             
-        }
-
-        private IQueryable<DayUsageWithUnitsNotNested> ApplyPaging(IQueryable<DayUsageWithUnitsNotNested> query, PagedUpdatedUsageResultRequestDto input)
-        {
-            var pagedInput = input as IPagedResultRequest;
-            if (pagedInput != null)
-            {
-                return query.PageBy(pagedInput);
-            }
-
-            var limitedInput = input as ILimitedResultRequest;
-            if(limitedInput != null)
-            {
-                return query.Take(limitedInput.MaxResultCount);
-            }
-
-            return query;
-        }
-
+        //}
 
         public async Task<Usage> endUsage(Guid id)
         {
@@ -102,13 +84,13 @@ namespace SYT.BnBCheckIn.Usages
         }
 
 
-        private async Task<UsageDataTable> GetNotNestedUsage(DateRange input)
+        public async Task<UsageDataTable> GetNotNestedUsage(PagedUpdatedUsageResultRequestDto input)
         {
             try
             {
                 var usage = await Repository.GetAllListAsync(x => x.EndTime != DateTime.MinValue);
 
-                usage = usage.Where(x => (x.StartTime <= input.endDate && x.StartTime >= input.startDate)).ToList();
+                usage = usage.Where(x => (x.StartTime <= input.EndTime && x.StartTime >= input.StartTime)).ToList();
 
                 if (usage.Count() == 0) return new UsageDataTable();
 
@@ -269,11 +251,20 @@ namespace SYT.BnBCheckIn.Usages
                     }
                 }
 
+                notNested = notNested.WhereIf(input.Unit != null, x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
+
+                int totalCount = notNested.Count();
+
+                var un_nested = new PagedResultDto<DayUsageWithUnitsNotNested>(
+                    totalCount,
+                    notNested
+                );
+
                 TimeSpan totalDuration_TS = TimeSpan.FromSeconds(totalDuration);
 
                 return new UsageDataTable()
                 {
-                    notNested = notNested,
+                    notNested = un_nested,
                     Duration = totalDuration_TS.ToString("dd':'hh':'mm':'ss")
                 };
 
