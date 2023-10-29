@@ -77,14 +77,14 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       value: 30,
       day: '30 days'
     },
-    {
-      value: 60,
-      day: '60 days'
-    },
-    {
-      value: 90,
-      day: '90 days'
-    },
+    // {
+    //   value: 60,
+    //   day: '60 days'
+    // },
+    // {
+    //   value: 90,
+    //   day: '90 days'
+    // },
   ];
 
   single: any[] = [];
