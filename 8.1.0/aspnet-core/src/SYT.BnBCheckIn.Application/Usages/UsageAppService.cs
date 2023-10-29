@@ -31,33 +31,6 @@ namespace SYT.BnBCheckIn.Usages
                     x.CheckInRef.Contains(input.Keyword)).AsQueryable();
         }
 
-       
-        //private async Task<PagedResultDto<DayUsageWithUnitsNotNested>> GetUpdatedAll(PagedUpdatedUsageResultRequestDto input)
-        //{
-        //    try
-        //    {
-        //        var tempUsages = await GetNotNestedUsage(new DateRange()
-        //        {
-        //            startDate = input.StartTime,
-        //            endDate = input.EndTime
-        //        });
-
-        //        tempUsages.notNested = tempUsages.notNested.WhereIf(input.Unit != null, x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
-
-        //        var totalCount = tempUsages.notNested.Count();
-
-        //        return new PagedResultDto<DayUsageWithUnitsNotNested>(
-        //            totalCount,
-        //            tempUsages.notNested
-        //        );
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //        return null;
-        //    }
-            
-        //}
 
         public async Task<Usage> endUsage(Guid id)
         {
@@ -279,7 +252,11 @@ namespace SYT.BnBCheckIn.Usages
         {
             try
             {
-                var todayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
+                DateTime DateTimeUTC = DateTime.UtcNow;
+                TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+                DateTime cstDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUTC, cstZone);
+
+                var todayDate = new DateTime(cstDateTime.Year, cstDateTime.Month, cstDateTime.Day, 23, 59, 59);
                 var aMonthAgo = todayDate.AddDays(-days).Date;
 
                 var usage = await Repository.GetAllListAsync(x => x.EndTime != DateTime.MinValue);
