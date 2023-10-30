@@ -129,26 +129,27 @@ namespace SYT.BnBCheckIn.Usages
                         if (dateindex == -1)
                         {
                             //Check if duration is more than 1 day
-                            if (ts.TotalSeconds > 86400)
+                            if (ts.TotalHours > 24)
                             {
                                 //Get how many days
-                                double duration_days = ts.TotalSeconds / 86400;
+                                int duration_days = (int)Math.Round(ts.TotalHours / 24);
 
                                 for (int day = 0; day <= duration_days; day++)
                                 {
                                     DateTime tempStartDate = u.StartTime.AddDays(day);
                                     if (day != 0)
                                     {
-                                        tempStartDate = new DateTime(tempStartDate.Date.Year, tempStartDate.Date.Month, tempStartDate.Date.Day, 00, 00, 00);
+                                        tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
                                     }
+
                                     DateTime tempEndDate = u.EndTime;
-                                    if (tempStartDate.Day != u.EndTime.Day)
+                                    if (tempStartDate.Day != tempEndDate.Day)
                                     {
-                                        tempEndDate = new DateTime(tempStartDate.Date.Year, tempStartDate.Date.Month, tempStartDate.Date.Day, 23, 59, 59);
+                                        tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
                                     }
 
                                     TimeSpan tempSpan = tempEndDate - tempStartDate;
-                                    double tempDuration = tempSpan.TotalSeconds;
+                                    double tempDuration = tempSpan.TotalHours;
 
                                     tempByDate.Add(new tempDaysUsage
                                     {
@@ -174,13 +175,13 @@ namespace SYT.BnBCheckIn.Usages
                                     Building = u.Building,
                                     StartTime = u.StartTime,
                                     EndTime = u.EndTime,
-                                    Duration = ts.TotalSeconds,
+                                    Duration = ts.TotalHours,
                                 });
                             }
                         }
                         else
                         {
-                            tempByDate[dateindex].Duration += ts.TotalSeconds;
+                            tempByDate[dateindex].Duration += ts.TotalHours;
                         }
                     }
 
@@ -212,7 +213,7 @@ namespace SYT.BnBCheckIn.Usages
                     foreach (var b in a.Series)
                     {
                         totalDuration += b.value;
-                        TimeSpan time = TimeSpan.FromSeconds(b.value);
+                        TimeSpan time = TimeSpan.FromHours(b.value);
                         notNested.Add(new DayUsageWithUnitsNotNested()
                         {
                             Unit = a.Name,
@@ -233,7 +234,7 @@ namespace SYT.BnBCheckIn.Usages
                     notNested
                 );
 
-                TimeSpan totalDuration_TS = TimeSpan.FromSeconds(totalDuration);
+                TimeSpan totalDuration_TS = TimeSpan.FromHours(totalDuration);
 
                 return new UsageDataTable()
                 {
@@ -327,26 +328,27 @@ namespace SYT.BnBCheckIn.Usages
                         if (dateindex == -1)
                         {
                             //Check if duration is more than 1 day
-                            if(ts.TotalSeconds > 86400)
+                            if(ts.TotalHours > 24)
                             {
                                 //Get how many days
-                                double duration_days = ts.TotalSeconds / 86400;
+                                int duration_days = (int)Math.Round(ts.TotalHours / 24);
 
                                 for (int day = 0; day <= duration_days; day++)
                                 {
                                     DateTime tempStartDate = u.StartTime.AddDays(day);
                                     if (day != 0)
                                     {
-                                        tempStartDate = new DateTime(tempStartDate.Date.Year, tempStartDate.Date.Month, tempStartDate.Date.Day, 00, 00, 00);
+                                        tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
                                     }
+
                                     DateTime tempEndDate = u.EndTime;
-                                    if (tempStartDate.Day != u.EndTime.Day)
+                                    if (tempStartDate.Day != tempEndDate.Day)
                                     {
-                                        tempEndDate = new DateTime(tempStartDate.Date.Year, tempStartDate.Date.Month, tempStartDate.Date.Day, 23, 59, 59);
+                                        tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
                                     }
 
                                     TimeSpan tempSpan = tempEndDate - tempStartDate;
-                                    double tempDuration = tempSpan.TotalSeconds;
+                                    double tempDuration = tempSpan.TotalHours;
 
                                     tempByDate.Add(new tempDaysUsage
                                     {
@@ -372,13 +374,13 @@ namespace SYT.BnBCheckIn.Usages
                                     Building = u.Building,
                                     StartTime = u.StartTime,
                                     EndTime = u.EndTime,
-                                    Duration = ts.TotalSeconds,
+                                    Duration = ts.TotalHours,
                                 });
                             }
                         }
                         else
                         {
-                            tempByDate[dateindex].Duration += ts.TotalSeconds;
+                            tempByDate[dateindex].Duration += ts.TotalHours;
                         }
                     }
 
@@ -407,7 +409,7 @@ namespace SYT.BnBCheckIn.Usages
                 {
                     foreach (var b in a.Series)
                     {
-                        TimeSpan time = TimeSpan.FromSeconds(b.value);
+                        TimeSpan time = TimeSpan.FromHours(b.value);
                         notNested.Add(new DayUsageWithUnitsNotNested()
                         {
                             Unit = a.Name,

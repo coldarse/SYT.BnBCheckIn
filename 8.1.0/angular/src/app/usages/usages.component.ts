@@ -198,16 +198,14 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
           this.usage = JSON.stringify(result_day.result.nested);
           let formatted_value = result_day.result.nested;
 
-          formatted_value.forEach((elem: any) => {
-            elem.series.forEach(element => {
-              element.value = (element.value / 60) / 60;
-            });
-          });
+          // formatted_value.forEach((elem: any) => {
+          //   elem.series.forEach(element => {
+          //     element.value = (element.value / 60) / 60;
+          //   });
+          // });
 
           
           this.single = formatted_value;
-
-          console.log(formatted_value);
           this.forExcel = result_day.result.notNested;
 
           this.default_days = 7;
@@ -281,14 +279,14 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.units = [...new Set(result.result.nested.map(item => item.name))];
       this.units.unshift('All');
       this.usage = JSON.stringify(result.result.nested);
-      console.log(this.usage);
+      this.default_unit = 'All';
       let formatted_value = result.result.nested;
 
-      formatted_value.forEach((elem: any) => {
-        elem.series.forEach(element => {
-          element.value = (element.value / 60) / 60;
-        });
-      });
+      // formatted_value.forEach((elem: any) => {
+      //   elem.series.forEach(element => {
+      //     element.value = (element.value / 60) / 60;
+      //   });
+      // });
 
       this.usage = JSON.stringify(formatted_value);
       this.single = formatted_value;
@@ -307,12 +305,12 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.selectedSeconds = false;
 
       let formatted_value: [] = JSON.parse(this.usage);
-      console.log(formatted_value);
-      formatted_value.forEach((elem: any) => {
-        elem.series.forEach(element => {
-          element.value = (element.value / 60) / 60;
-        });
-      });
+      // console.log(formatted_value);
+      // formatted_value.forEach((elem: any) => {
+      //   elem.series.forEach(element => {
+      //     element.value = (element.value / 60) / 60;
+      //   });
+      // });
       this.single = formatted_value;
 
       this.yAxisLabel = 'Hours';
@@ -325,12 +323,12 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.selectedSeconds = false;
       
       let formatted_value: [] = JSON.parse(this.usage);
-      console.log(formatted_value);
-      formatted_value.forEach((elem: any) => {
-        elem.series.forEach(element => {
-          element.value = element.value / 60;
-        });
-      });
+      // console.log(formatted_value);
+      // formatted_value.forEach((elem: any) => {
+      //   elem.series.forEach(element => {
+      //     element.value = element.value / 60;
+      //   });
+      // });
       this.single = formatted_value;
 
       this.yAxisLabel = 'Minutes';
