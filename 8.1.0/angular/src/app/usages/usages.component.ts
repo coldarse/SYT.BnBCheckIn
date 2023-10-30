@@ -50,7 +50,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   showXAxisLabel: boolean = true;
   xAxisLabel: string = 'Date';
   yAxisLabel: string = 'Hours';
-  yScaleMax = 24;
+  yScaleMax = 26;
   yScaleMin = 0;
   curve = shape.curveLinear;
 
