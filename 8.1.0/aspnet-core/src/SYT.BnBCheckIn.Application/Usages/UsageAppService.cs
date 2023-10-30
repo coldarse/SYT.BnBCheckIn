@@ -125,65 +125,131 @@ namespace SYT.BnBCheckIn.Usages
                     {
                         TimeSpan ts = u.EndTime - u.StartTime;
 
-                        int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
-                        if (dateindex == -1)
+                        List<tempDaysUsage> internalTempByDate = new List<tempDaysUsage>();
+
+                        if (ts.TotalHours > 24)
                         {
-                            //Check if duration is more than 1 day
-                            if (ts.TotalHours > 24)
-                            {
-                                //Get how many days
-                                int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
+                            //Get how many days
+                            int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
 
-                                for (int day = 0; day <= duration_days; day++)
+                            for (int day = 0; day <= duration_days; day++)
+                            {
+                                DateTime tempStartDate = u.StartTime.AddDays(day);
+                                if (day != 0)
                                 {
-                                    DateTime tempStartDate = u.StartTime.AddDays(day);
-                                    if (day != 0)
-                                    {
-                                        tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
-                                    }
-
-                                    DateTime tempEndDate = u.EndTime;
-                                    if (tempStartDate.Day != tempEndDate.Day)
-                                    {
-                                        tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
-                                    }
-
-                                    TimeSpan tempSpan = tempEndDate - tempStartDate;
-                                    double tempDuration = tempSpan.TotalHours;
-
-                                    tempByDate.Add(new tempDaysUsage
-                                    {
-                                        Id = u.Id,
-                                        Unit = u.Unit,
-                                        Pico = u.Pico,
-                                        RFID = u.RFID,
-                                        Building = u.Building,
-                                        StartTime = tempStartDate,
-                                        EndTime = tempEndDate,
-                                        Duration = tempDuration,
-                                    });
+                                    tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
                                 }
-                            }
-                            else
-                            {
-                                tempByDate.Add(new tempDaysUsage
+
+                                DateTime tempEndDate = u.EndTime;
+                                if (tempStartDate.Day != tempEndDate.Day)
+                                {
+                                    tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
+                                }
+
+                                TimeSpan tempSpan = tempEndDate - tempStartDate;
+                                double tempDuration = tempSpan.TotalHours;
+
+                                internalTempByDate.Add(new tempDaysUsage
                                 {
                                     Id = u.Id,
                                     Unit = u.Unit,
                                     Pico = u.Pico,
                                     RFID = u.RFID,
                                     Building = u.Building,
-                                    StartTime = u.StartTime,
-                                    EndTime = u.EndTime,
-                                    Duration = ts.TotalHours,
+                                    StartTime = tempStartDate,
+                                    EndTime = tempEndDate,
+                                    Duration = tempDuration,
                                 });
                             }
                         }
                         else
                         {
-                            tempByDate[dateindex].Duration += ts.TotalHours;
-                            tempByDate[dateindex].EndTime = u.EndTime;
+                            internalTempByDate.Add(new tempDaysUsage
+                            {
+                                Id = u.Id,
+                                Unit = u.Unit,
+                                Pico = u.Pico,
+                                RFID = u.RFID,
+                                Building = u.Building,
+                                StartTime = u.StartTime,
+                                EndTime = u.EndTime,
+                                Duration = ts.TotalHours,
+                            });
                         }
+
+                        foreach(var du in internalTempByDate)
+                        {
+                            int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == du.StartTime.Date);
+                            if(dateindex == -1)
+                            {
+                                tempByDate.Add(du);
+                            }
+                            else
+                            {
+                                tempByDate[dateindex].Duration += ts.TotalHours;
+                                tempByDate[dateindex].EndTime = u.EndTime;
+                            }
+                        }
+
+                        //int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
+                        //if (dateindex == -1)
+                        //{
+                        //    //Check if duration is more than 1 day
+                        //    if (ts.TotalHours > 24)
+                        //    {
+                        //        //Get how many days
+                        //        int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
+
+                        //        for (int day = 0; day <= duration_days; day++)
+                        //        {
+                        //            DateTime tempStartDate = u.StartTime.AddDays(day);
+                        //            if (day != 0)
+                        //            {
+                        //                tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
+                        //            }
+
+                        //            DateTime tempEndDate = u.EndTime;
+                        //            if (tempStartDate.Day != tempEndDate.Day)
+                        //            {
+                        //                tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
+                        //            }
+
+                        //            TimeSpan tempSpan = tempEndDate - tempStartDate;
+                        //            double tempDuration = tempSpan.TotalHours;
+
+                        //            tempByDate.Add(new tempDaysUsage
+                        //            {
+                        //                Id = u.Id,
+                        //                Unit = u.Unit,
+                        //                Pico = u.Pico,
+                        //                RFID = u.RFID,
+                        //                Building = u.Building,
+                        //                StartTime = tempStartDate,
+                        //                EndTime = tempEndDate,
+                        //                Duration = tempDuration,
+                        //            });
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        tempByDate.Add(new tempDaysUsage
+                        //        {
+                        //            Id = u.Id,
+                        //            Unit = u.Unit,
+                        //            Pico = u.Pico,
+                        //            RFID = u.RFID,
+                        //            Building = u.Building,
+                        //            StartTime = u.StartTime,
+                        //            EndTime = u.EndTime,
+                        //            Duration = ts.TotalHours,
+                        //        });
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    tempByDate[dateindex].Duration += ts.TotalHours;
+                        //    tempByDate[dateindex].EndTime = u.EndTime;
+                        //}
                     }
 
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
@@ -325,65 +391,131 @@ namespace SYT.BnBCheckIn.Usages
                     {
                         TimeSpan ts = u.EndTime - u.StartTime;
 
-                        int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
-                        if (dateindex == -1)
+                        List<tempDaysUsage> internalTempByDate = new List<tempDaysUsage>();
+
+                        if (ts.TotalHours > 24)
                         {
-                            //Check if duration is more than 1 day
-                            if(ts.TotalHours > 24)
-                            {
-                                //Get how many days
-                                int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
+                            //Get how many days
+                            int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
 
-                                for (int day = 0; day <= duration_days; day++)
+                            for (int day = 0; day <= duration_days; day++)
+                            {
+                                DateTime tempStartDate = u.StartTime.AddDays(day);
+                                if (day != 0)
                                 {
-                                    DateTime tempStartDate = u.StartTime.AddDays(day);
-                                    if (day != 0)
-                                    {
-                                        tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
-                                    }
-
-                                    DateTime tempEndDate = u.EndTime;
-                                    if (tempStartDate.Day != tempEndDate.Day)
-                                    {
-                                        tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
-                                    }
-
-                                    TimeSpan tempSpan = tempEndDate - tempStartDate;
-                                    double tempDuration = tempSpan.TotalHours;
-
-                                    tempByDate.Add(new tempDaysUsage
-                                    {
-                                        Id = u.Id,
-                                        Unit = u.Unit,
-                                        Pico = u.Pico,
-                                        RFID = u.RFID,
-                                        Building = u.Building,
-                                        StartTime = tempStartDate,
-                                        EndTime = tempEndDate,
-                                        Duration = tempDuration,
-                                    });
+                                    tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
                                 }
-                            }
-                            else
-                            {
-                                tempByDate.Add(new tempDaysUsage
+
+                                DateTime tempEndDate = u.EndTime;
+                                if (tempStartDate.Day != tempEndDate.Day)
+                                {
+                                    tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
+                                }
+
+                                TimeSpan tempSpan = tempEndDate - tempStartDate;
+                                double tempDuration = tempSpan.TotalHours;
+
+                                internalTempByDate.Add(new tempDaysUsage
                                 {
                                     Id = u.Id,
                                     Unit = u.Unit,
                                     Pico = u.Pico,
                                     RFID = u.RFID,
                                     Building = u.Building,
-                                    StartTime = u.StartTime,
-                                    EndTime = u.EndTime,
-                                    Duration = ts.TotalHours,
+                                    StartTime = tempStartDate,
+                                    EndTime = tempEndDate,
+                                    Duration = tempDuration,
                                 });
                             }
                         }
                         else
                         {
-                            tempByDate[dateindex].Duration += ts.TotalHours;
-                            tempByDate[dateindex].EndTime = u.EndTime;
+                            internalTempByDate.Add(new tempDaysUsage
+                            {
+                                Id = u.Id,
+                                Unit = u.Unit,
+                                Pico = u.Pico,
+                                RFID = u.RFID,
+                                Building = u.Building,
+                                StartTime = u.StartTime,
+                                EndTime = u.EndTime,
+                                Duration = ts.TotalHours,
+                            });
                         }
+
+                        foreach (var du in internalTempByDate)
+                        {
+                            int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == du.StartTime.Date);
+                            if (dateindex == -1)
+                            {
+                                tempByDate.Add(du);
+                            }
+                            else
+                            {
+                                tempByDate[dateindex].Duration += ts.TotalHours;
+                                tempByDate[dateindex].EndTime = u.EndTime;
+                            }
+                        }
+
+                        //int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
+                        //if (dateindex == -1)
+                        //{
+                        //    //Check if duration is more than 1 day
+                        //    if (ts.TotalHours > 24)
+                        //    {
+                        //        //Get how many days
+                        //        int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
+
+                        //        for (int day = 0; day <= duration_days; day++)
+                        //        {
+                        //            DateTime tempStartDate = u.StartTime.AddDays(day);
+                        //            if (day != 0)
+                        //            {
+                        //                tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
+                        //            }
+
+                        //            DateTime tempEndDate = u.EndTime;
+                        //            if (tempStartDate.Day != tempEndDate.Day)
+                        //            {
+                        //                tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
+                        //            }
+
+                        //            TimeSpan tempSpan = tempEndDate - tempStartDate;
+                        //            double tempDuration = tempSpan.TotalHours;
+
+                        //            tempByDate.Add(new tempDaysUsage
+                        //            {
+                        //                Id = u.Id,
+                        //                Unit = u.Unit,
+                        //                Pico = u.Pico,
+                        //                RFID = u.RFID,
+                        //                Building = u.Building,
+                        //                StartTime = tempStartDate,
+                        //                EndTime = tempEndDate,
+                        //                Duration = tempDuration,
+                        //            });
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        tempByDate.Add(new tempDaysUsage
+                        //        {
+                        //            Id = u.Id,
+                        //            Unit = u.Unit,
+                        //            Pico = u.Pico,
+                        //            RFID = u.RFID,
+                        //            Building = u.Building,
+                        //            StartTime = u.StartTime,
+                        //            EndTime = u.EndTime,
+                        //            Duration = ts.TotalHours,
+                        //        });
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    tempByDate[dateindex].Duration += ts.TotalHours;
+                        //    tempByDate[dateindex].EndTime = u.EndTime;
+                        //}
                     }
 
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
