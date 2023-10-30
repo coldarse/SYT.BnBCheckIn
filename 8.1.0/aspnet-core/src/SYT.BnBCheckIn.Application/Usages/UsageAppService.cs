@@ -115,7 +115,7 @@ namespace SYT.BnBCheckIn.Usages
                     }
                 }
 
-
+          
 
                 foreach (var v in unitsinfo)
                 {
@@ -132,7 +132,7 @@ namespace SYT.BnBCheckIn.Usages
                             if (ts.TotalHours > 24)
                             {
                                 //Get how many days
-                                int duration_days = (int)Math.Round(ts.TotalHours / 24);
+                                int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
 
                                 for (int day = 0; day <= duration_days; day++)
                                 {
@@ -182,6 +182,7 @@ namespace SYT.BnBCheckIn.Usages
                         else
                         {
                             tempByDate[dateindex].Duration += ts.TotalHours;
+                            tempByDate[dateindex].EndTime = u.EndTime;
                         }
                     }
 
@@ -331,7 +332,7 @@ namespace SYT.BnBCheckIn.Usages
                             if(ts.TotalHours > 24)
                             {
                                 //Get how many days
-                                int duration_days = (int)Math.Round(ts.TotalHours / 24);
+                                int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
 
                                 for (int day = 0; day <= duration_days; day++)
                                 {
@@ -381,6 +382,7 @@ namespace SYT.BnBCheckIn.Usages
                         else
                         {
                             tempByDate[dateindex].Duration += ts.TotalHours;
+                            tempByDate[dateindex].EndTime = u.EndTime;
                         }
                     }
 
