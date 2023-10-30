@@ -52,7 +52,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   yAxisLabel: string = 'Hours';
   yScaleMax = 24;
   yScaleMin = 0;
-  curve = shape.curveMonotoneX;
+  curve = shape.curveLinear;
 
   colorScheme = {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
@@ -290,7 +290,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
         });
       });
 
-      // this.usage = JSON.stringify(formatted_value);
+      this.usage = JSON.stringify(formatted_value);
       this.single = formatted_value;
       this.forExcel = JSON.stringify(result.result.notNested);
     });
