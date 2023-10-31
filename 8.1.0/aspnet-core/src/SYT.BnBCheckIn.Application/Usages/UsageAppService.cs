@@ -147,7 +147,6 @@ namespace SYT.BnBCheckIn.Usages
                                 }
 
                                 TimeSpan tempSpan = tempEndDate - tempStartDate;
-                                double tempDuration = tempSpan.TotalHours;
 
                                 internalTempByDate.Add(new tempDaysUsage
                                 {
@@ -158,7 +157,7 @@ namespace SYT.BnBCheckIn.Usages
                                     Building = u.Building,
                                     StartTime = tempStartDate,
                                     EndTime = tempEndDate,
-                                    Duration = tempDuration,
+                                    Duration = tempSpan.TotalHours,
                                 });
                             }
                         }
@@ -190,66 +189,6 @@ namespace SYT.BnBCheckIn.Usages
                                 tempByDate[dateindex].EndTime = u.EndTime;
                             }
                         }
-
-                        //int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
-                        //if (dateindex == -1)
-                        //{
-                        //    //Check if duration is more than 1 day
-                        //    if (ts.TotalHours > 24)
-                        //    {
-                        //        //Get how many days
-                        //        int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
-
-                        //        for (int day = 0; day <= duration_days; day++)
-                        //        {
-                        //            DateTime tempStartDate = u.StartTime.AddDays(day);
-                        //            if (day != 0)
-                        //            {
-                        //                tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
-                        //            }
-
-                        //            DateTime tempEndDate = u.EndTime;
-                        //            if (tempStartDate.Day != tempEndDate.Day)
-                        //            {
-                        //                tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
-                        //            }
-
-                        //            TimeSpan tempSpan = tempEndDate - tempStartDate;
-                        //            double tempDuration = tempSpan.TotalHours;
-
-                        //            tempByDate.Add(new tempDaysUsage
-                        //            {
-                        //                Id = u.Id,
-                        //                Unit = u.Unit,
-                        //                Pico = u.Pico,
-                        //                RFID = u.RFID,
-                        //                Building = u.Building,
-                        //                StartTime = tempStartDate,
-                        //                EndTime = tempEndDate,
-                        //                Duration = tempDuration,
-                        //            });
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        tempByDate.Add(new tempDaysUsage
-                        //        {
-                        //            Id = u.Id,
-                        //            Unit = u.Unit,
-                        //            Pico = u.Pico,
-                        //            RFID = u.RFID,
-                        //            Building = u.Building,
-                        //            StartTime = u.StartTime,
-                        //            EndTime = u.EndTime,
-                        //            Duration = ts.TotalHours,
-                        //        });
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    tempByDate[dateindex].Duration += ts.TotalHours;
-                        //    tempByDate[dateindex].EndTime = u.EndTime;
-                        //}
                     }
 
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
@@ -413,7 +352,6 @@ namespace SYT.BnBCheckIn.Usages
                                 }
 
                                 TimeSpan tempSpan = tempEndDate - tempStartDate;
-                                double tempDuration = tempSpan.TotalHours;
 
                                 internalTempByDate.Add(new tempDaysUsage
                                 {
@@ -424,7 +362,7 @@ namespace SYT.BnBCheckIn.Usages
                                     Building = u.Building,
                                     StartTime = tempStartDate,
                                     EndTime = tempEndDate,
-                                    Duration = tempDuration,
+                                    Duration = tempSpan.TotalHours,
                                 });
                             }
                         }
@@ -456,66 +394,6 @@ namespace SYT.BnBCheckIn.Usages
                                 tempByDate[dateindex].EndTime = u.EndTime;
                             }
                         }
-
-                        //int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == u.StartTime.Date);
-                        //if (dateindex == -1)
-                        //{
-                        //    //Check if duration is more than 1 day
-                        //    if (ts.TotalHours > 24)
-                        //    {
-                        //        //Get how many days
-                        //        int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
-
-                        //        for (int day = 0; day <= duration_days; day++)
-                        //        {
-                        //            DateTime tempStartDate = u.StartTime.AddDays(day);
-                        //            if (day != 0)
-                        //            {
-                        //                tempStartDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 00, 00, 00);
-                        //            }
-
-                        //            DateTime tempEndDate = u.EndTime;
-                        //            if (tempStartDate.Day != tempEndDate.Day)
-                        //            {
-                        //                tempEndDate = new DateTime(tempStartDate.Year, tempStartDate.Month, tempStartDate.Day, 23, 59, 59);
-                        //            }
-
-                        //            TimeSpan tempSpan = tempEndDate - tempStartDate;
-                        //            double tempDuration = tempSpan.TotalHours;
-
-                        //            tempByDate.Add(new tempDaysUsage
-                        //            {
-                        //                Id = u.Id,
-                        //                Unit = u.Unit,
-                        //                Pico = u.Pico,
-                        //                RFID = u.RFID,
-                        //                Building = u.Building,
-                        //                StartTime = tempStartDate,
-                        //                EndTime = tempEndDate,
-                        //                Duration = tempDuration,
-                        //            });
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        tempByDate.Add(new tempDaysUsage
-                        //        {
-                        //            Id = u.Id,
-                        //            Unit = u.Unit,
-                        //            Pico = u.Pico,
-                        //            RFID = u.RFID,
-                        //            Building = u.Building,
-                        //            StartTime = u.StartTime,
-                        //            EndTime = u.EndTime,
-                        //            Duration = ts.TotalHours,
-                        //        });
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    tempByDate[dateindex].Duration += ts.TotalHours;
-                        //    tempByDate[dateindex].EndTime = u.EndTime;
-                        //}
                     }
 
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
@@ -546,8 +424,8 @@ namespace SYT.BnBCheckIn.Usages
                         TimeSpan time = TimeSpan.FromHours(b.value);
                         notNested.Add(new DayUsageWithUnitsNotNested()
                         {
-                            Unit = a.Name,
                             Building = a.Building,
+                            Unit = a.Name,
                             StartTime = b.start,
                             EndTime = b.end,
                             Duration = time.ToString("hh':'mm':'ss"),

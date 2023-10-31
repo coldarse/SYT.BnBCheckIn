@@ -89,7 +89,7 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
                 'Pages.RFID'
             ),
             new MenuItem(
-                this.l('Picos'),
+                this.l('Devices'),
                 '/app/picos',
                 'fa-solid fa-microchip',
                 'Pages.Pico'

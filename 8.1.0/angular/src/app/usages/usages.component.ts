@@ -62,8 +62,9 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   selectedHours = true;
   selectedMinutes = false;
   selectedSeconds = false;
-  
 
+  minDate = '';
+  
   noOfDays = [
     {
       value: 7,
@@ -98,7 +99,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     private _modalService: BsModalService
   ){
     super(injector);
-
+    this.minDate = new Date(new Date().getTime() - (62 * 24 * 60 * 60 * 1000)).toLocaleDateString('en-CA');
     this.startTime = new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000)).toLocaleDateString('en-CA');
     this.endTime = new Date().toLocaleDateString('en-CA');
   }
@@ -194,18 +195,10 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
           this.buildings = [...new Set(result_day.result.nested.map(item => item.building))];
           this.buildings.unshift('All');
           this.units = [...new Set(result_day.result.nested.map(item => item.name))];
+          this.units.sort((a, b) => a.name - b.name);
           this.units.unshift('All');
           this.usage = JSON.stringify(result_day.result.nested);
-          let formatted_value = result_day.result.nested;
-
-          // formatted_value.forEach((elem: any) => {
-          //   elem.series.forEach(element => {
-          //     element.value = (element.value / 60) / 60;
-          //   });
-          // });
-
-          
-          this.single = formatted_value;
+          this.single = result_day.result.nested;
           this.forExcel = result_day.result.notNested;
 
           this.default_days = 7;
@@ -277,19 +270,12 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.buildings = [...new Set(result.result.nested.map(item => item.building))];
       this.buildings.unshift('All');
       this.units = [...new Set(result.result.nested.map(item => item.name))];
+      this.units.sort((a, b) => a.name - b.name);
       this.units.unshift('All');
       this.usage = JSON.stringify(result.result.nested);
       this.default_unit = 'All';
-      let formatted_value = result.result.nested;
-
-      // formatted_value.forEach((elem: any) => {
-      //   elem.series.forEach(element => {
-      //     element.value = (element.value / 60) / 60;
-      //   });
-      // });
-
-      this.usage = JSON.stringify(formatted_value);
-      this.single = formatted_value;
+      this.usage = JSON.stringify(result.result.nested);
+      this.single = result.result.nested;
       this.forExcel = JSON.stringify(result.result.notNested);
     });
   }
@@ -303,16 +289,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.selectedHours = true;
       this.selectedMinutes = false;
       this.selectedSeconds = false;
-
-      let formatted_value: [] = JSON.parse(this.usage);
-      // console.log(formatted_value);
-      // formatted_value.forEach((elem: any) => {
-      //   elem.series.forEach(element => {
-      //     element.value = (element.value / 60) / 60;
-      //   });
-      // });
-      this.single = formatted_value;
-
+      this.single = JSON.parse(this.usage);
       this.yAxisLabel = 'Hours';
       this.yScaleMax = 24;
       this.yScaleMin = 0;
@@ -321,16 +298,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.selectedHours = false;
       this.selectedMinutes = true;
       this.selectedSeconds = false;
-      
-      let formatted_value: [] = JSON.parse(this.usage);
-      // console.log(formatted_value);
-      // formatted_value.forEach((elem: any) => {
-      //   elem.series.forEach(element => {
-      //     element.value = element.value / 60;
-      //   });
-      // });
-      this.single = formatted_value;
-
+      this.single = JSON.parse(this.usage);
       this.yAxisLabel = 'Minutes';
       this.yScaleMax = 1440;
       this.yScaleMin = 0;
@@ -339,11 +307,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.selectedHours = false;
       this.selectedMinutes = false;
       this.selectedSeconds = true;
-      
-      let formatted_value: [] = JSON.parse(this.usage);
-      console.log(formatted_value);
-      this.single = formatted_value;
-
+      this.single = JSON.parse(this.usage);
       this.yAxisLabel = 'Seconds';
       this.yScaleMax = 86400;
       this.yScaleMin = 0;

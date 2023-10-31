@@ -40,8 +40,8 @@ namespace SYT.BnBCheckIn.Usages.Dto
 
 	public class DayUsageWithUnitsNotNested
 	{
-		public string Unit { get; set; }
-		public string Building { get; set; }
+        public string Building { get; set; }
+        public string Unit { get; set; }
 		public string StartTime { get; set; }
 		public string EndTime { get; set; }
         public string Duration { get; set; }
