@@ -13,6 +13,7 @@ using SYT.BnBCheckIn.RFIDS;
 using SYT.BnBCheckIn.Usages;
 using SYT.BnBCheckIn.Buildings;
 using System.Threading;
+using Abp.Application.Services.Dto;
 
 namespace SYT.BnBCheckIn.Units
 {
@@ -23,12 +24,16 @@ namespace SYT.BnBCheckIn.Units
         private readonly UsageAppService _usageAppService;
         private readonly BuildingAppService _buildingAppService;
 
-        public UnitAppService(IRepository<Unit, Guid> repository, PicoAppService picoAppService, RFIDAppService rFIDAppService, UsageAppService usageAppService, BuildingAppService buildingAppService) : base(repository)
+        private readonly IRepository<Building, Guid> _buildingRepository;
+
+        public UnitAppService(IRepository<Unit, Guid> repository, PicoAppService picoAppService, RFIDAppService rFIDAppService, UsageAppService usageAppService, BuildingAppService buildingAppService, IRepository<Building, Guid> buildingRepository) : base(repository)
         {
             _picoAppService = picoAppService;
             _rFIDAppService = rFIDAppService;
             _usageAppService = usageAppService;
             _buildingAppService = buildingAppService;
+
+            _buildingRepository = buildingRepository;
         }
         protected override IQueryable<Unit> CreateFilteredQuery(PagedUnitResultRequestDto input)
         {
@@ -40,6 +45,45 @@ namespace SYT.BnBCheckIn.Units
 
             units = units.Where(x => !x.UnitNo.ToLower().Contains("master"));
             return units;
+        }
+
+        public override PagedResultDto<UnitDto> GetAll(PagedUnitResultRequestDto input)
+        {
+            CheckGetAllPermission();
+
+            var query = CreateFilteredQuery(input);
+
+            var totalCount = query.Count();
+
+            var buildings = _buildingRepository.GetAll();
+
+            var joinedQuery = from unit in query
+                              join building in buildings
+                              on unit.BuildingId equals building.Id
+                              select new
+                              {
+                                  unit.Id,
+                                  unit.BuildingId,
+                                  unit.UnitNo,
+                                  unit.Status,
+                                  unit.Remark,
+                                  building.Name
+                              };
+
+            joinedQuery = joinedQuery.OrderBy(x => x.Name).ThenBy(y => y.UnitNo);
+
+            var mapQuery = joinedQuery.Select(a => new Unit(){
+                Id = a.Id,
+                BuildingId = a.BuildingId,
+                UnitNo = a.UnitNo,
+                Status = a.Status,
+                Remark = a.Remark
+            }).ToList();
+
+            return new PagedResultDto<UnitDto>(
+                totalCount,
+                mapQuery.Select(MapToEntityDto).ToList()
+                );
         }
 
         public async Task<List<Unit>> GetAllUnits()

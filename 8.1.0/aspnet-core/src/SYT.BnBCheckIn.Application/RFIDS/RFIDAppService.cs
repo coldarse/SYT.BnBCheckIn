@@ -11,6 +11,8 @@ using SYT.BnBCheckIn.RFIDS.Dto;
 using SYT.BnBCheckIn.Units;
 using Abp.UI;
 using SYT.BnBCheckIn.Picos;
+using Abp.Application.Services.Dto;
+using SYT.BnBCheckIn.Picos.Dto;
 
 namespace SYT.BnBCheckIn.RFIDS
 {
@@ -62,6 +64,42 @@ namespace SYT.BnBCheckIn.RFIDS
 
             return mapQuery.AsQueryable();
             
+        }
+
+        public override PagedResultDto<RFIDDto> GetAll(PagedRFIDResultRequestDto input)
+        {
+            CheckGetAllPermission();
+
+            var query = CreateFilteredQuery(input);
+
+            var totalCount = query.Count();
+
+            var units = _unitRepository.GetAll();
+
+            var joinedQuery = from rfid in query
+                              join unit in units
+                              on rfid.UnitId equals unit.Id
+                              select new
+                              {
+                                  rfid.Id,
+                                  rfid.Value,
+                                  rfid.UnitId,
+                                  unit.UnitNo
+                              };
+
+            joinedQuery = joinedQuery.OrderBy(x => x.UnitNo);
+
+            var mapQuery = joinedQuery.Select(a => new RFID()
+            {
+                Id = a.Id,
+                Value = a.Value,
+                UnitId = a.UnitId
+            }).ToList();
+
+            return new PagedResultDto<RFIDDto>(
+                totalCount,
+                mapQuery.Select(MapToEntityDto).ToList()
+                );
         }
 
         public async Task<RFID> getRFID(string value)
