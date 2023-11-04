@@ -61,7 +61,7 @@ import { PicosComponent } from './picos/picos.component';
 import { CreateUpdatePicoComponent } from './picos/create-update-pico/create-update-pico.component';
 import { PicoService } from '@shared/service-proxies/picos/pico.service';
 
-
+import { Mods } from '../app/helper/Mods';
 
 @NgModule({
     declarations: [
@@ -128,6 +128,9 @@ import { PicoService } from '@shared/service-proxies/picos/pico.service';
         BuildingService,
         RFIDService,
         PicoService,
+
+        /* Helpers */
+        Mods,
     ]
 })
 export class AppModule {}

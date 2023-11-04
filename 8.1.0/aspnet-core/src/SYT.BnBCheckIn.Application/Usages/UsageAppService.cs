@@ -56,6 +56,31 @@ namespace SYT.BnBCheckIn.Usages
             return usage;
         }
 
+        private int CalculateDaysFromTwoDates(DateTime startDate, DateTime endDate)
+        {
+            // Check if startDate and endDate is same day
+            bool sameDay = startDate.Date.Equals(endDate.Date);
+
+            // If not same day
+            if (!sameDay)
+            {
+                bool reachedSameDay = false;
+                int day = 0;
+
+                while (!reachedSameDay)
+                {
+                    DateTime tempStartDate = startDate.AddDays(day);
+                    day++;
+                    if (tempStartDate.Date.Equals(endDate.Date)) reachedSameDay = true;
+                }
+
+                return day;
+
+            }
+            // If same day
+            else return 0;
+        }
+
 
         public async Task<UsageDataTable> GetNotNestedUsage(PagedUpdatedUsageResultRequestDto input)
         {
@@ -127,12 +152,12 @@ namespace SYT.BnBCheckIn.Usages
 
                         List<tempDaysUsage> internalTempByDate = new List<tempDaysUsage>();
 
-                        if (ts.TotalHours > 24)
-                        {
-                            //Get how many days
-                            int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
+                        //Get how many days
+                        int duration_days = CalculateDaysFromTwoDates(u.StartTime, u.EndTime);
 
-                            for (int day = 0; day <= duration_days; day++)
+                        if (duration_days > 1)
+                        {
+                            for (int day = 0; day < duration_days; day++)
                             {
                                 DateTime tempStartDate = u.StartTime.AddDays(day);
                                 if (day != 0)
@@ -176,17 +201,17 @@ namespace SYT.BnBCheckIn.Usages
                             });
                         }
 
-                        foreach(var du in internalTempByDate)
+                        foreach (var du in internalTempByDate)
                         {
-                            int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == du.StartTime.Date);
-                            if(dateindex == -1)
+                            int dateindex = tempByDate.FindIndex(x => x.StartTime.Date.Equals(du.StartTime.Date));
+                            if (dateindex == -1)
                             {
                                 tempByDate.Add(du);
                             }
                             else
                             {
-                                tempByDate[dateindex].Duration += ts.TotalHours;
-                                tempByDate[dateindex].EndTime = u.EndTime;
+                                tempByDate[dateindex].Duration += du.Duration;
+                                tempByDate[dateindex].EndTime = du.EndTime;
                             }
                         }
                     }
@@ -232,6 +257,8 @@ namespace SYT.BnBCheckIn.Usages
                 }
 
                 notNested = notNested.WhereIf(input.Unit != null, x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
+
+                notNested = notNested.OrderBy(d => d.StartTime).ToList();
 
                 int totalCount = notNested.Count();
 
@@ -332,12 +359,12 @@ namespace SYT.BnBCheckIn.Usages
 
                         List<tempDaysUsage> internalTempByDate = new List<tempDaysUsage>();
 
-                        if (ts.TotalHours > 24)
-                        {
-                            //Get how many days
-                            int duration_days = (int)Math.Ceiling(ts.TotalHours / 24);
+                        //Get how many days
+                        int duration_days = CalculateDaysFromTwoDates(u.StartTime, u.EndTime);
 
-                            for (int day = 0; day <= duration_days; day++)
+                        if (duration_days > 1)
+                        {
+                            for (int day = 0; day < duration_days; day++)
                             {
                                 DateTime tempStartDate = u.StartTime.AddDays(day);
                                 if (day != 0)
@@ -383,15 +410,15 @@ namespace SYT.BnBCheckIn.Usages
 
                         foreach (var du in internalTempByDate)
                         {
-                            int dateindex = tempByDate.FindIndex(x => x.StartTime.Date == du.StartTime.Date);
+                            int dateindex = tempByDate.FindIndex(x => x.StartTime.Date.Equals(du.StartTime.Date));
                             if (dateindex == -1)
                             {
                                 tempByDate.Add(du);
                             }
                             else
                             {
-                                tempByDate[dateindex].Duration += ts.TotalHours;
-                                tempByDate[dateindex].EndTime = u.EndTime;
+                                tempByDate[dateindex].Duration += du.Duration;
+                                tempByDate[dateindex].EndTime = du.EndTime;
                             }
                         }
                     }
@@ -424,8 +451,8 @@ namespace SYT.BnBCheckIn.Usages
                         TimeSpan time = TimeSpan.FromHours(b.value);
                         notNested.Add(new DayUsageWithUnitsNotNested()
                         {
-                            Building = a.Building,
                             Unit = a.Name,
+                            Building = a.Building,
                             StartTime = b.start,
                             EndTime = b.end,
                             Duration = time.ToString("hh':'mm':'ss"),
@@ -433,7 +460,7 @@ namespace SYT.BnBCheckIn.Usages
                     }
                 }
 
-
+                notNested = notNested.OrderBy(d => d.StartTime).ToList();
 
                 return new DayUsageWithAndWithoutNested()
                 {

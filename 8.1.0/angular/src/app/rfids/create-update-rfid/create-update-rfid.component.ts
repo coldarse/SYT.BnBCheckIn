@@ -3,6 +3,7 @@ import { AppComponentBase } from '../../../shared/app-component-base';
 import { RFIDDto } from '../../../shared/service-proxies/rfids/model';
 import { RFIDService } from '../../../shared/service-proxies/rfids/rfid.service';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Mods } from '@app/helper/Mods';
 
 @Component({
   selector: 'app-create-update-rfid',
@@ -48,15 +49,18 @@ export class CreateUpdateRFIDComponent extends AppComponentBase
   selectType(event: any){
     this.type = event.target.value;
     if(this.type == 1){
-      this.units = JSON.parse(this.tempUnits).filter(x => !x.unitNo.toLowerCase().includes('master'))
+      this.units = JSON.parse(this.tempUnits).filter(x => !x.unitNo.toLowerCase().includes('master'));
     }
     else if(this.type == 2){
-      this.units = JSON.parse(this.tempUnits).filter(x => x.unitNo.toLowerCase().includes('master'))
+      this.units = JSON.parse(this.tempUnits).filter(x => x.unitNo.toLowerCase().includes('master'));
     }
     else{
       this.units = JSON.parse(this.tempUnits);
     }
+
+    this.units.sort(Mods.CompareUnitNo);
   }
+
 
   save(): void {
     this.saving = true;

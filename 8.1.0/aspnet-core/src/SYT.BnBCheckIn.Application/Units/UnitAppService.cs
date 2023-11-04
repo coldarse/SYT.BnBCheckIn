@@ -70,15 +70,18 @@ namespace SYT.BnBCheckIn.Units
                                   building.Name
                               };
 
-            joinedQuery = joinedQuery.OrderBy(x => x.Name).ThenBy(y => y.UnitNo);
+            //joinedQuery = joinedQuery.OrderBy(x => x.Name).ThenBy(y => y.UnitNo);
+            joinedQuery = joinedQuery.OrderBy(x => x.UnitNo);
 
-            var mapQuery = joinedQuery.Select(a => new Unit(){
+            var mapQuery = joinedQuery.Select(a => new Unit()
+            {
                 Id = a.Id,
                 BuildingId = a.BuildingId,
                 UnitNo = a.UnitNo,
                 Status = a.Status,
                 Remark = a.Remark
             }).ToList();
+
 
             return new PagedResultDto<UnitDto>(
                 totalCount,

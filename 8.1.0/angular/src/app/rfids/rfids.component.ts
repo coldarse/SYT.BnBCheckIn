@@ -127,6 +127,7 @@ export class RFIDSComponent extends PagedListingComponentBase<RFIDDto> {
 
           this.rfids.push(tempRFID);
         });
+
       });
       this.showPaging(result.result, pageNumber);
     });

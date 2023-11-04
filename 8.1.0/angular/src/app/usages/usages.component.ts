@@ -8,6 +8,7 @@ import { CreateUpdateUsageComponent } from '../usages/create-update-usage/create
 import * as XLSX from 'xlsx';
 import * as moment from 'moment'; 
 import * as shape from 'd3-shape';
+import { Mods } from '@app/helper/Mods';
 
 class PagedUsagesRequestDto extends PagedRequestDto{
   unit: string;
@@ -195,7 +196,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
           this.buildings = [...new Set(result_day.result.nested.map(item => item.building))];
           this.buildings.unshift('All');
           this.units = [...new Set(result_day.result.nested.map(item => item.name))];
-          this.units.sort((a, b) => a.name - b.name);
+          this.units.sort(Mods.Compare);
           this.units.unshift('All');
           this.usage = JSON.stringify(result_day.result.nested);
           this.single = result_day.result.nested;
@@ -270,7 +271,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.buildings = [...new Set(result.result.nested.map(item => item.building))];
       this.buildings.unshift('All');
       this.units = [...new Set(result.result.nested.map(item => item.name))];
-      this.units.sort((a, b) => a.name - b.name);
+      this.units.sort(Mods.Compare);
       this.units.unshift('All');
       this.usage = JSON.stringify(result.result.nested);
       this.default_unit = 'All';
