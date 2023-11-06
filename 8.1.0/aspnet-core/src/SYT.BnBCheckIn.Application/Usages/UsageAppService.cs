@@ -86,9 +86,7 @@ namespace SYT.BnBCheckIn.Usages
         {
             try
             {
-                var usage = await Repository.GetAllListAsync(x => x.EndTime != DateTime.MinValue);
-
-                usage = usage.Where(x => (x.StartTime <= input.EndTime && x.StartTime >= input.StartTime)).ToList();
+                var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= input.EndTime && x.StartTime >= input.StartTime));
 
                 if (usage.Count() == 0) return new UsageDataTable();
 
@@ -258,11 +256,11 @@ namespace SYT.BnBCheckIn.Usages
 
                 notNested = notNested.WhereIf(input.Unit != null, x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
 
-                notNested = notNested.OrderBy(d => d.StartTime).ToList();
+                notNested = notNested.OrderBy(d => d.Unit).ToList();
 
                 int totalCount = notNested.Count();
 
-                var un_nested = new PagedResultDto<DayUsageWithUnitsNotNested>(
+                var pagedNotNested = new PagedResultDto<DayUsageWithUnitsNotNested>(
                     totalCount,
                     notNested
                 );
@@ -271,7 +269,9 @@ namespace SYT.BnBCheckIn.Usages
 
                 return new UsageDataTable()
                 {
-                    notNested = un_nested,
+                    pagedNotNested = pagedNotNested,
+                    nested = units,
+                    notNested = notNested,
                     Duration = totalDuration_TS.ToString("dd':'hh':'mm':'ss")
                 };
 
@@ -293,11 +293,12 @@ namespace SYT.BnBCheckIn.Usages
                 var todayDate = new DateTime(cstDateTime.Year, cstDateTime.Month, cstDateTime.Day, 23, 59, 59);
                 var aMonthAgo = todayDate.AddDays(-days).Date;
 
-                var usage = await Repository.GetAllListAsync(x => x.EndTime != DateTime.MinValue);
-
-                usage = usage.Where(x => (x.StartTime <= todayDate && x.StartTime >= aMonthAgo)).ToList();
+                var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= todayDate && x.StartTime >= aMonthAgo));
 
                 if (usage.Count() == 0) return new DayUsageWithAndWithoutNested();
+
+
+
 
                 List<string> tempUnits = new List<string>();
 
@@ -460,7 +461,7 @@ namespace SYT.BnBCheckIn.Usages
                     }
                 }
 
-                notNested = notNested.OrderBy(d => d.StartTime).ToList();
+                notNested = notNested.OrderBy(d => d.Unit).ToList();
 
                 return new DayUsageWithAndWithoutNested()
                 {

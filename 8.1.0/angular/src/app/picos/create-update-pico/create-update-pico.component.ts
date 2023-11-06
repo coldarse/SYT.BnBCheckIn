@@ -3,6 +3,7 @@ import { AppComponentBase } from '../../../shared/app-component-base';
 import { PicoDto } from '../../../shared/service-proxies/picos/model';
 import { PicoService } from '../../../shared/service-proxies/picos/pico.service';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Mods } from '@app/helper/Mods';
 
 @Component({
   selector: 'app-create-update-pico',
@@ -32,6 +33,8 @@ export class CreateUpdatePicoComponent extends AppComponentBase
     if(this.pico.id != undefined){
       this.isCreate = false;
     }
+
+    this.units.sort(Mods.CompareUnitNo);
   }
 
   selectUnit(event: any){

@@ -182,11 +182,25 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     )
     .subscribe((result: any) => {
       this.usages = [];
-      result.result.notNested.items.forEach((element: any) => {
+      result.result.pagedNotNested.items.forEach((element: any) => {
         this.usages.push(element);
       });
       this.totalduration = result.result.duration;
-      console.log(this.totalduration);
+
+      // this.buildings = [...new Set(result.result.nested.map(item => item.building))];
+      // this.buildings.unshift('All');
+      // this.units = [...new Set(result.result.nested.map(item => item.name))];
+      // this.units.sort(Mods.Compare);
+      // this.units.unshift('All');
+      // this.usage = JSON.stringify(result.result.nested);
+      // this.single = result.result.nested;
+      // this.forExcel = result.result.notNested;
+
+      // this.default_days = 7;
+      // this.default_unit = 'All';
+
+      // this.showPaging(result.result.pagedNotNested, pageNumber);
+
       this._usageService
         .getDayUsage(7).pipe(
           finalize(() => {
