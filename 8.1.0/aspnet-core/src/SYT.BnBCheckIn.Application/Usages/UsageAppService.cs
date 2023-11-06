@@ -88,6 +88,8 @@ namespace SYT.BnBCheckIn.Usages
             {
                 var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= input.EndTime && x.StartTime >= input.StartTime));
 
+                int days = CalculateDaysFromTwoDates(input.StartTime, input.EndTime);
+
                 if (usage.Count() == 0) return new UsageDataTable();
 
                 List<string> tempUnits = new List<string>();
@@ -199,6 +201,34 @@ namespace SYT.BnBCheckIn.Usages
                             });
                         }
 
+                        List<DateTime> allDays = new List<DateTime>();
+                        for (int g = 0; g < days; g++)
+                        {
+                            allDays.Add(input.StartTime.AddDays(g));
+                        }
+
+                        foreach (var day in allDays)
+                        {
+                            var contains = internalTempByDate.Any(x => x.StartTime.Equals(day));
+
+                            if (!contains)
+                            {
+                                internalTempByDate.Add(new tempDaysUsage
+                                {
+                                    Id = u.Id,
+                                    Unit = u.Unit,
+                                    Pico = u.Pico,
+                                    RFID = u.RFID,
+                                    Building = u.Building,
+                                    StartTime = new DateTime(day.Year, day.Month, day.Day, 00, 00, 00),
+                                    EndTime = new DateTime(day.Year, day.Month, day.Day, 11, 59, 59),
+                                    Duration = 0,
+                                });
+                            }
+                        }
+
+                        internalTempByDate = internalTempByDate.OrderBy(x => x.StartTime).ToList();
+
                         foreach (var du in internalTempByDate)
                         {
                             int dateindex = tempByDate.FindIndex(x => x.StartTime.Date.Equals(du.StartTime.Date));
@@ -241,16 +271,19 @@ namespace SYT.BnBCheckIn.Usages
                 {
                     foreach (var b in a.Series)
                     {
-                        totalDuration += b.value;
-                        TimeSpan time = TimeSpan.FromHours(b.value);
-                        notNested.Add(new DayUsageWithUnitsNotNested()
+                        if (b.value != 0)
                         {
-                            Unit = a.Name,
-                            Building = a.Building,
-                            StartTime = b.start,
-                            EndTime = b.end,
-                            Duration = time.ToString("hh':'mm':'ss"),
-                        });
+                            totalDuration += b.value;
+                            TimeSpan time = TimeSpan.FromHours(b.value);
+                            notNested.Add(new DayUsageWithUnitsNotNested()
+                            {
+                                Unit = a.Name,
+                                Building = a.Building,
+                                StartTime = b.start,
+                                EndTime = b.end,
+                                Duration = time.ToString("hh':'mm':'ss"),
+                            });
+                        }
                     }
                 }
 
@@ -291,9 +324,9 @@ namespace SYT.BnBCheckIn.Usages
                 DateTime cstDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUTC, cstZone);
 
                 var todayDate = new DateTime(cstDateTime.Year, cstDateTime.Month, cstDateTime.Day, 23, 59, 59);
-                var aMonthAgo = todayDate.AddDays(-days).Date;
+                var nDaysAgo = todayDate.AddDays(-days).Date;
 
-                var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= todayDate && x.StartTime >= aMonthAgo));
+                var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= todayDate && x.StartTime >= nDaysAgo));
 
                 if (usage.Count() == 0) return new DayUsageWithAndWithoutNested();
 
@@ -409,6 +442,34 @@ namespace SYT.BnBCheckIn.Usages
                             });
                         }
 
+                        List<DateTime> allDays = new List<DateTime>();
+                        for (int g = 0; g < days; g++)
+                        {
+                            allDays.Add(nDaysAgo.AddDays(g));
+                        }
+
+                        foreach (var day in allDays)
+                        {
+                            var contains = internalTempByDate.Any(x => x.StartTime.Equals(day));
+
+                            if(!contains)
+                            {
+                                internalTempByDate.Add(new tempDaysUsage
+                                {
+                                    Id = u.Id,
+                                    Unit = u.Unit,
+                                    Pico = u.Pico,
+                                    RFID = u.RFID,
+                                    Building = u.Building,
+                                    StartTime = new DateTime(day.Year, day.Month, day.Day, 00, 00, 00),
+                                    EndTime = new DateTime(day.Year, day.Month, day.Day, 11, 59, 59),
+                                    Duration = 0,
+                                });
+                            }
+                        }
+
+                        internalTempByDate = internalTempByDate.OrderBy(x => x.StartTime).ToList();
+
                         foreach (var du in internalTempByDate)
                         {
                             int dateindex = tempByDate.FindIndex(x => x.StartTime.Date.Equals(du.StartTime.Date));
@@ -423,6 +484,8 @@ namespace SYT.BnBCheckIn.Usages
                             }
                         }
                     }
+
+
 
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
 
@@ -449,19 +512,24 @@ namespace SYT.BnBCheckIn.Usages
                 {
                     foreach (var b in a.Series)
                     {
-                        TimeSpan time = TimeSpan.FromHours(b.value);
-                        notNested.Add(new DayUsageWithUnitsNotNested()
+                        if(b.value != 0)
                         {
-                            Unit = a.Name,
-                            Building = a.Building,
-                            StartTime = b.start,
-                            EndTime = b.end,
-                            Duration = time.ToString("hh':'mm':'ss"),
-                        });
+                            TimeSpan time = TimeSpan.FromHours(b.value);
+                            notNested.Add(new DayUsageWithUnitsNotNested()
+                            {
+                                Unit = a.Name,
+                                Building = a.Building,
+                                StartTime = b.start,
+                                EndTime = b.end,
+                                Duration = time.ToString("hh':'mm':'ss"),
+                            });
+                        }
                     }
                 }
 
                 notNested = notNested.OrderBy(d => d.Unit).ToList();
+
+
 
                 return new DayUsageWithAndWithoutNested()
                 {
