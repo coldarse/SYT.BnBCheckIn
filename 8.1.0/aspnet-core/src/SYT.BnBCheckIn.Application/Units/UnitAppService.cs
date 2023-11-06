@@ -57,8 +57,8 @@ namespace SYT.BnBCheckIn.Units
 
             var buildings = _buildingRepository.GetAll();
 
-            var joinedQuery = from unit in query
-                              join building in buildings
+            var joinedQuery = from unit in query.ToList()
+                              join building in buildings.ToList()
                               on unit.BuildingId equals building.Id
                               select new
                               {

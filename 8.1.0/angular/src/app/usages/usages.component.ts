@@ -219,7 +219,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
           this.default_days = 7;
           this.default_unit = 'All';
 
-          this.showPaging(result.result.notNested, pageNumber);
+          this.showPaging(result.result.pagedNotNested, pageNumber);
         });
     });
     
