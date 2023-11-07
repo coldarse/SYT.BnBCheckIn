@@ -266,29 +266,58 @@ namespace SYT.BnBCheckIn.Usages
 
                 double totalDuration = 0;
 
+                bool doUnitFilter = input.Unit != null;
+
                 List<DayUsageWithUnitsNotNested> notNested = new();
-                foreach (var a in units)
+
+                if (doUnitFilter)
                 {
-                    foreach (var b in a.Series)
+                    foreach (var a in units)
                     {
-                        if (b.value != 0)
+                        foreach (var b in a.Series)
                         {
-                            totalDuration += b.value;
-                            TimeSpan time = TimeSpan.FromHours(b.value);
-                            notNested.Add(new DayUsageWithUnitsNotNested()
+                            if (b.value != 0)
                             {
-                                Unit = a.Name,
-                                Building = a.Building,
-                                StartTime = b.start,
-                                EndTime = b.end,
-                                Duration = time.ToString("hh':'mm':'ss"),
-                            });
+                                if (a.Name.ToLower().Contains(input.Unit.ToLower()))
+                                {
+                                    totalDuration += b.value;
+                                    TimeSpan time = TimeSpan.FromHours(b.value);
+                                    notNested.Add(new DayUsageWithUnitsNotNested()
+                                    {
+                                        Unit = a.Name,
+                                        Building = a.Building,
+                                        StartTime = b.start,
+                                        EndTime = b.end,
+                                        Duration = time.ToString("hh':'mm':'ss"),
+                                    });
+                                }
+                            }
                         }
                     }
                 }
-
-                notNested = notNested.WhereIf(input.Unit != null, x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
-
+                else
+                { 
+                    foreach (var a in units)
+                    {
+                        foreach (var b in a.Series)
+                        {
+                            if (b.value != 0)
+                            {
+                                totalDuration += b.value;
+                                TimeSpan time = TimeSpan.FromHours(b.value);
+                                notNested.Add(new DayUsageWithUnitsNotNested()
+                                {
+                                    Unit = a.Name,
+                                    Building = a.Building,
+                                    StartTime = b.start,
+                                    EndTime = b.end,
+                                    Duration = time.ToString("hh':'mm':'ss"),
+                                });
+                            }
+                        }
+                    }
+                }
+                
                 notNested = notNested.OrderBy(d => d.Unit).ToList();
 
                 int totalCount = notNested.Count();
