@@ -117,6 +117,19 @@ export class UnitService {
 
     }
 
+    //GetAllUnassignedUnits
+    getAllUnassignedUnits(){
+        let url_ = this.url + "/api/services/app/Unit/GetAllUnassignedUnits";
+
+        return this.http.get(
+            url_,
+            this.options_
+        ).pipe(
+            retry(1),
+            catchError(this.handleError),
+        )
+    }
+
     // Update Master Unit
     updateMasterUnitName(body: any){
         let url_ = this.url + "/api/services/app/Unit/updateMasterUnitName";

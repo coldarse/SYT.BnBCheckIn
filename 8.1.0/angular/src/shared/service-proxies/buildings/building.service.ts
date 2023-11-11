@@ -35,7 +35,7 @@ export class BuildingService {
     //Create Building
     create(body: BuildingDto){
         return this.http.post(
-            this.url + '/api/services/app/Building/Create',
+            this.url + '/api/services/app/Building/CreateBuilding',
             body,
             this.options_
         ).pipe(
@@ -47,7 +47,7 @@ export class BuildingService {
     //Update Building
     update(body: BuildingDto){
         return this.http.put(
-            this.url + '/api/services/app/Building/Update',
+            this.url + '/api/services/app/Building/UpdateBuilding',
             body,
             this.options_
         ).pipe(
@@ -103,7 +103,7 @@ export class BuildingService {
         )
     }
 
-    //GetAllUnits
+    //GetAllBuildings
     getAllBuildings(){
         let url_ = this.url + "/api/services/app/Building/GetAllBuildings";
 

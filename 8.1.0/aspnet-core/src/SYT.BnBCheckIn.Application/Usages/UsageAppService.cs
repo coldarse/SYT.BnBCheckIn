@@ -221,7 +221,7 @@ namespace SYT.BnBCheckIn.Usages
                                     RFID = u.RFID,
                                     Building = u.Building,
                                     StartTime = new DateTime(day.Year, day.Month, day.Day, 00, 00, 00),
-                                    EndTime = new DateTime(day.Year, day.Month, day.Day, 11, 59, 59),
+                                    EndTime = new DateTime(day.Year, day.Month, day.Day, 23, 59, 59),
                                     Duration = 0,
                                 });
                             }
@@ -491,7 +491,7 @@ namespace SYT.BnBCheckIn.Usages
                                     RFID = u.RFID,
                                     Building = u.Building,
                                     StartTime = new DateTime(day.Year, day.Month, day.Day, 00, 00, 00),
-                                    EndTime = new DateTime(day.Year, day.Month, day.Day, 11, 59, 59),
+                                    EndTime = new DateTime(day.Year, day.Month, day.Day, 23, 59, 59),
                                     Duration = 0,
                                 });
                             }

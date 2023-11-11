@@ -33,6 +33,28 @@ namespace SYT.BnBCheckIn.Buildings
                     x.Remark.Contains(input.Keyword)).AsQueryable();
         }
 
+        public async Task<BuildingDto> CreateBuilding(BuildingDto input)
+        {
+            var tempbuilding = await Repository.FirstOrDefaultAsync(x => x.Name.ToLower().Equals(input.Name.ToLower()));
+
+            if (tempbuilding is not null) return new BuildingDto() { Name = "ERR501", Remark= "Building with this name already exists." };
+
+            var createbuilding = await Repository.InsertAsync(MapToEntity(input));
+
+            return MapToEntityDto(createbuilding);
+        }
+
+        public async Task<BuildingDto> UpdateBuilding(BuildingDto input)
+        {
+            var tempbuilding = await Repository.FirstOrDefaultAsync(x => x.Name.ToLower().Equals(input.Name.ToLower()));
+
+            if (tempbuilding is not null) return new BuildingDto() { Name = "ERR501", Remark = "Building with this name already exists." };
+
+            var updatebuilding = await Repository.UpdateAsync(MapToEntity(input));
+
+            return MapToEntityDto(updatebuilding);
+        }
+
         public async Task<List<Building>> GetAllBuildings()
         {
             List<Building> temp = await Repository.GetAllListAsync();

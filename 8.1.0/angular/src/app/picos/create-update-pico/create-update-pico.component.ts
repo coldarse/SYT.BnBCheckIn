@@ -46,10 +46,17 @@ export class CreateUpdatePicoComponent extends AppComponentBase
 
     if(this.pico.id != undefined){
       this._picoService.update(this.pico).subscribe(
-        () => {
-          this.notify.info(this.l('SavedSuccessfully'));
-          this.bsModalRef.hide();
-          this.onSave.emit();
+        (data: any) => {
+          if(data.result.name == 'ERR501'){
+            this.notify.error('Pico with this name already exists.');
+            this.bsModalRef.hide();
+            this.onSave.emit();
+          }
+          else{
+            this.notify.info(this.l('SavedSuccessfully'));
+            this.bsModalRef.hide();
+            this.onSave.emit();
+          }
         },
         () => {
           this.saving = false;
@@ -58,10 +65,17 @@ export class CreateUpdatePicoComponent extends AppComponentBase
     }
     else{
       this._picoService.create(this.pico).subscribe(
-        () => {
-          this.notify.info(this.l('SavedSuccessfully'));
-          this.bsModalRef.hide();
-          this.onSave.emit();
+        (data: any) => {
+          if(data.result.name == 'ERR501'){
+            this.notify.error('Pico with this name already exists.');
+            this.bsModalRef.hide();
+            this.onSave.emit();
+          }
+          else{
+            this.notify.info(this.l('SavedSuccessfully'));
+            this.bsModalRef.hide();
+            this.onSave.emit();
+          }
         },
         () => {
           this.saving = false;

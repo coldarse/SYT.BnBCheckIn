@@ -4,6 +4,7 @@ import { BuildingDto } from '../../../shared/service-proxies/buildings/model';
 import { BuildingService } from '../../../shared/service-proxies/buildings/building.service';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { UnitService } from '@shared/service-proxies/units/unit.service';
+import { title } from 'process';
 
 @Component({
   selector: 'app-create-update-building',
@@ -40,41 +41,55 @@ export class CreateUpdateBuildingComponent extends AppComponentBase
     this.saving = true;
 
     if(this.building.id != undefined){
-      this._buildingService.update(this.building).subscribe(() => {
-        const body = {
-          buildingId: this.building.id,
-          name: this.building.name
+      this._buildingService.update(this.building).subscribe((data: any) => {
+        if(data.result.name == 'ERR501'){
+          this.notify.error(data.result.remark);
+          this.bsModalRef.hide();
+          this.onSave.emit();
         }
-        this._unitService.updateMasterUnitName(body).subscribe(
-          () => {
-            this.notify.info(this.l('SavedSuccessfully'));
-            this.bsModalRef.hide();
-            this.onSave.emit();
-          },
-          () => {
-            this.saving = false;
+        else{
+          const body = {
+            buildingId: this.building.id,
+            name: this.building.name
           }
-        )
+          this._unitService.updateMasterUnitName(body).subscribe(
+            () => {
+              this.notify.info(this.l('SavedSuccessfully'));
+              this.bsModalRef.hide();
+              this.onSave.emit();
+            },
+            () => {
+              this.saving = false;
+            }
+          )
+        }
       });
     }
     else{
       this._buildingService.create(this.building).subscribe((data: any) => {
-        const unit = {
-          buildingId: data.result.id,
-          unitNo: data.result.name + ' Master',
-          status: 'Vacant',
-          remark: '-'
+        if(data.result.name == 'ERR501'){
+          this.notify.error(data.result.remark);
+          this.bsModalRef.hide();
+          this.onSave.emit();
         }
-        this._unitService.create(unit).subscribe(
-          () => {
-            this.notify.info(this.l('SavedSuccessfully'));
-            this.bsModalRef.hide();
-            this.onSave.emit();
-          },
-          () => {
-            this.saving = false;
+        else{
+          const unit = {
+            buildingId: data.result.id,
+            unitNo: data.result.name + ' Master',
+            status: 'Vacant',
+            remark: '-'
           }
-        )
+          this._unitService.create(unit).subscribe(
+            () => {
+              this.notify.info(this.l('SavedSuccessfully'));
+              this.bsModalRef.hide();
+              this.onSave.emit();
+            },
+            () => {
+              this.saving = false;
+            }
+          )
+        }
       });
     }
 

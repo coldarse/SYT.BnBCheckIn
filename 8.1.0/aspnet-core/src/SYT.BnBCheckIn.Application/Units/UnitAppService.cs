@@ -94,6 +94,17 @@ namespace SYT.BnBCheckIn.Units
             return temp;
         }
 
+        public async Task<List<Unit>> GetAllUnassignedUnits()
+        {
+            var units = await Repository.GetAllListAsync();
+
+            var picounits = await _picoAppService.GetPicoUnits();
+
+            var unassignedunits = units.Where(item => !picounits.Contains(item.Id));
+
+            return unassignedunits.ToList();
+        }
+
         public async Task<Unit> GetUnitbyName(string unit)
         {
             Unit temp = await Repository.FirstOrDefaultAsync(x => x.UnitNo.ToLower() == unit.ToLower());

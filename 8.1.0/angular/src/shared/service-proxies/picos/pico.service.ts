@@ -35,7 +35,7 @@ export class PicoService {
     //Create Pico
     create(body: PicoDto){
         return this.http.post(
-            this.url + '/api/services/app/Pico/Create',
+            this.url + '/api/services/app/Pico/CreatePico',
             body,
             this.options_
         ).pipe(

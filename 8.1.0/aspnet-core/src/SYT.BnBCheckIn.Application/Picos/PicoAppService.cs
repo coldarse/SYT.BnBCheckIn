@@ -97,6 +97,40 @@ namespace SYT.BnBCheckIn.Picos
                 );
         }
 
+        public async Task<PicoDto> CreatePico(PicoDto input)
+        {
+            var temppico = await Repository.FirstOrDefaultAsync(x => x.Name.ToLower().Equals(input.Name.ToLower()));
+
+            if (temppico is not null) return new PicoDto() { Name = "ERR501" };
+
+            var createpico = await Repository.InsertAsync(MapToEntity(input));
+
+            return MapToEntityDto(createpico);
+        }
+
+        public async Task<PicoDto> UpdatePico(PicoDto input)
+        {
+            try
+            {
+                var temppico = await Repository.FirstOrDefaultAsync(x => x.Name.ToLower().Equals(input.Name.ToLower()));
+
+                if (temppico is not null)
+                {
+                    if (!temppico.Name.ToLower().Equals(input.Name.ToLower())) return new PicoDto() { Name = "ERR501" };
+                };
+
+                var updatepico = await Repository.UpdateAsync(MapToEntity(input));
+
+                return MapToEntityDto(updatepico);
+            }
+            catch(Exception ex)
+            {
+                Console.Write("");
+                return new PicoDto();
+            }
+            
+        }
+
         public async Task<Pico> getPicoByName(string pico)
         {
             return await Repository.FirstOrDefaultAsync(x => x.Name == pico);
@@ -105,6 +139,20 @@ namespace SYT.BnBCheckIn.Picos
         public async Task<Pico> getPicoByID(Guid pico)
         {
             return await Repository.FirstOrDefaultAsync(x => x.Id == pico);
+        }
+
+        public async Task<List<Guid>> GetPicoUnits()
+        {
+            var picos = await Repository.GetAllListAsync();
+
+            List<Guid> units = new List<Guid>();
+
+            foreach(var pico in picos)
+            {
+                units.Add(pico.UnitId);
+            }
+
+            return units;
         }
     }
 }

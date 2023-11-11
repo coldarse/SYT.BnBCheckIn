@@ -22,6 +22,7 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
   picos: any[] = [];
 
   units: any[] = [];
+  unassignedunits: any[] = [];
 
   constructor(
     injector: Injector,
@@ -48,7 +49,7 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
         {
           class: 'modal-lg',
           initialState: {
-            units: this.units,
+            units: this.unassignedunits,
           },
         }
       );
@@ -60,7 +61,7 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
           class: 'modal-lg',
           initialState: {
             pico: entity,
-            units: this.units,
+            units: this.unassignedunits,
           },
         }
       );
@@ -125,9 +126,15 @@ export class PicosComponent extends PagedListingComponentBase<PicoDto> {
 
           this.picos.push(tempPico);
         });
+
+        this._unitService.getAllUnassignedUnits().subscribe((_results: any) => {
+          this.unassignedunits = _results.result.filter((obj) => {return !obj.unitNo.includes('Master')});
+
+          this.showPaging(result.result, pageNumber);
+        })
       });
 
-      this.showPaging(result.result, pageNumber);
+      
     });
   }
 }
