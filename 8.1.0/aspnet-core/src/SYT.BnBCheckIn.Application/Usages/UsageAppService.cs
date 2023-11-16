@@ -329,6 +329,8 @@ namespace SYT.BnBCheckIn.Usages
                 TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
                 DateTime cstDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUTC, cstZone);
 
+                days = days - 1;
+
                 var todayDate = new DateTime(cstDateTime.Year, cstDateTime.Month, cstDateTime.Day, 23, 59, 59);
                 var nDaysAgo = todayDate.AddDays(-days).Date;
 
@@ -466,7 +468,7 @@ namespace SYT.BnBCheckIn.Usages
                     }
 
                     List<DateTime> allDays = new List<DateTime>();
-                    for (int g = 0; g < days; g++)
+                    for (int g = 0; g <= days; g++)
                     {
                         allDays.Add(nDaysAgo.AddDays(g));
                     }
