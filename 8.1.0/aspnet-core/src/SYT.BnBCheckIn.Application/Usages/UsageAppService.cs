@@ -56,7 +56,7 @@ namespace SYT.BnBCheckIn.Usages
             return usage;
         }
 
-        private int CalculateDaysFromTwoDates(DateTime startDate, DateTime endDate)
+        private static int CalculateDaysFromTwoDates(DateTime startDate, DateTime endDate)
         {
             // Check if startDate and endDate is same day
             bool sameDay = startDate.Date.Equals(endDate.Date);
@@ -65,7 +65,7 @@ namespace SYT.BnBCheckIn.Usages
             if (!sameDay)
             {
                 bool reachedSameDay = false;
-                int day = 0;
+                int day = 1;
 
                 while (!reachedSameDay)
                 {
@@ -86,7 +86,11 @@ namespace SYT.BnBCheckIn.Usages
         {
             try
             {
-                var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= input.EndTime && x.StartTime >= input.StartTime));
+
+                var startDate = new DateTime(input.StartTime.Year, input.StartTime.Month, input.StartTime.Day, 00, 00, 00);
+                var endDate = new DateTime(input.EndTime.Year, input.EndTime.Month, input.EndTime.Day, 23, 59, 59);
+
+                var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= endDate && x.StartTime >= startDate));
 
                 bool doUnitFilter = input.Unit != null;
 
@@ -95,11 +99,11 @@ namespace SYT.BnBCheckIn.Usages
                     usage = usage.Where(x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
                 }
 
-                int days = CalculateDaysFromTwoDates(input.StartTime, input.EndTime);
+                int days = CalculateDaysFromTwoDates(startDate, endDate);
 
                 if (usage.Count() == 0) return new UsageDataTable();
 
-                List<string> tempUnits = new List<string>();
+                List<string> tempUnits = new();
 
                 foreach (var u in usage)
                 {
@@ -228,7 +232,7 @@ namespace SYT.BnBCheckIn.Usages
                     List<DateTime> allDays = new List<DateTime>();
                     for (int g = 0; g < days; g++)
                     {
-                        allDays.Add(input.StartTime.AddDays(g));
+                        allDays.Add(startDate.AddDays(g));
                     }
 
                     foreach (var t in tempByDate)
@@ -329,26 +333,23 @@ namespace SYT.BnBCheckIn.Usages
                 TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
                 DateTime cstDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUTC, cstZone);
 
-                days = days - 1;
+                days -= - 1;
 
                 var todayDate = new DateTime(cstDateTime.Year, cstDateTime.Month, cstDateTime.Day, 23, 59, 59);
                 var nDaysAgo = todayDate.AddDays(-days).Date;
 
                 var usage = await Repository.GetAllListAsync(x => (x.EndTime != DateTime.MinValue) && (x.StartTime <= todayDate && x.StartTime >= nDaysAgo));
 
-                if (usage.Count() == 0) return new DayUsageWithAndWithoutNested();
+                if (usage.Count == 0) return new DayUsageWithAndWithoutNested();
 
-
-
-
-                List<string> tempUnits = new List<string>();
+                List<string> tempUnits = new();
 
                 foreach (var u in usage)
                 {
                     if (!tempUnits.Contains(u.Unit)) tempUnits.Add(u.Unit);
                 }
 
-                List<UnitsWithInfo> unitsinfo = new List<UnitsWithInfo>();
+                List<UnitsWithInfo> unitsinfo = new();
 
                 foreach (var u in tempUnits)
                 {
@@ -359,7 +360,7 @@ namespace SYT.BnBCheckIn.Usages
                     });
                 }
 
-                List<DayUsageWithUnits> units = new List<DayUsageWithUnits>();
+                List<DayUsageWithUnits> units = new();
 
                 foreach (var u in unitsinfo)
                 {
@@ -393,13 +394,13 @@ namespace SYT.BnBCheckIn.Usages
 
                 foreach (var v in unitsinfo)
                 {
-                    List<tempDaysUsage> tempByDate = new List<tempDaysUsage>();
+                    List<tempDaysUsage> tempByDate = new();
 
                     foreach (var u in v.Infos)
                     {
                         TimeSpan ts = u.EndTime - u.StartTime;
 
-                        List<tempDaysUsage> internalTempByDate = new List<tempDaysUsage>();
+                        List<tempDaysUsage> internalTempByDate = new();
 
                         //Get how many days
                         int duration_days = CalculateDaysFromTwoDates(u.StartTime, u.EndTime);
