@@ -92,7 +92,7 @@ namespace SYT.BnBCheckIn.Usages
 
                 if (doUnitFilter)
                 {
-                    usage = usage.Where(x => x.Unit.ToLower().Equals(input.Unit.ToLower())).ToList();
+                    usage = usage.Where(x => x.Unit.ToLower().Contains(input.Unit.ToLower())).ToList();
                 }
 
                 int days = CalculateDaysFromTwoDates(input.StartTime, input.EndTime);
