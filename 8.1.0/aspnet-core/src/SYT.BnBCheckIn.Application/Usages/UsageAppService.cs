@@ -291,8 +291,8 @@ namespace SYT.BnBCheckIn.Usages
                             {
                                 Unit = a.Name,
                                 Building = a.Building,
-                                StartTime = b.start,
-                                EndTime = b.end,
+                                StartTime = DateTime.Parse(b.start).ToString("dd/MM/yyyy hh:mm:ss"),
+                                EndTime = DateTime.Parse(b.end).ToString("dd/MM/yyyy hh:mm:ss"),
                                 Duration = time.ToString("hh':'mm':'ss"),
                             });
                         }
@@ -526,8 +526,8 @@ namespace SYT.BnBCheckIn.Usages
                             {
                                 Unit = a.Name,
                                 Building = a.Building,
-                                StartTime = b.start,
-                                EndTime = b.end,
+                                StartTime = DateTime.Parse(b.start).ToString("dd/MM/yyyy hh:mm:ss"),
+                                EndTime = DateTime.Parse(b.end).ToString("dd/MM/yyyy hh:mm:ss"),
                                 Duration = time.ToString("hh':'mm':'ss"),
                             });
                         }

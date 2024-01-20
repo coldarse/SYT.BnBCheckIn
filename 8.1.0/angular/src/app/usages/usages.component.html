@@ -93,8 +93,8 @@
                             >
                                 <td>{{ usage.building }}</td>
                                 <td>{{ usage.unit }}</td>
-                                <td>{{ usage.startTime | date:'medium' }}</td>
-                                <td>{{ usage.endTime | date:'medium' }}</td>
+                                <td>{{ usage.startTime }}</td>
+                                <td>{{ usage.endTime }}</td>
                                 <td>{{ usage.duration }}</td>
                             </tr>
                             </tbody>
@@ -200,18 +200,17 @@
                 <div class="card-body" *ngIf="hideChart">
                     <div class="LineChart">
                         <ngx-charts-line-chart
-                        [view]=""
-                        [scheme]="colorScheme"
-                        [legend]="legend"
-                        [showXAxisLabel]="showXAxisLabel"
-                        [showYAxisLabel]="showYAxisLabel"
-                        [xAxis]="xAxis"
-                        [yAxis]="yAxis"
-                        [xAxisLabel]="xAxisLabel"
-                        [yAxisLabel]="yAxisLabel"
-                        [results]="single"
-                        
-                        [curve]="curve"
+                            [view]=""
+                            [scheme]="colorScheme"
+                            [legend]="legend"
+                            [showXAxisLabel]="showXAxisLabel"
+                            [showYAxisLabel]="showYAxisLabel"
+                            [xAxis]="xAxis"
+                            [yAxis]="yAxis"
+                            [xAxisLabel]="xAxisLabel"
+                            [yAxisLabel]="yAxisLabel"
+                            [results]="single"
+                            [curve]="curve"
                         >
                         </ngx-charts-line-chart>
                     </div>
