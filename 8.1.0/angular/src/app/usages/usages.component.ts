@@ -187,40 +187,40 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       });
       this.totalduration = result.result.duration;
 
-      // this.buildings = [...new Set(result.result.nested.map(item => item.building))];
-      // this.buildings.unshift('All');
-      // this.units = [...new Set(result.result.nested.map(item => item.name))];
-      // this.units.sort(Mods.Compare);
-      // this.units.unshift('All');
-      // this.usage = JSON.stringify(result.result.nested);
-      // this.single = result.result.nested;
-      // this.forExcel = result.result.notNested;
+      this.buildings = [...new Set(result.result.nested.map(item => item.building))];
+      this.buildings.unshift('All');
+      this.units = [...new Set(result.result.nested.map(item => item.name))];
+      this.units.sort(Mods.Compare);
+      this.units.unshift('All');
+      this.usage = JSON.stringify(result.result.nested);
+      this.single = result.result.nested;
+      this.forExcel = JSON.stringify(result.result.notNested);
 
-      // this.default_days = 7;
-      // this.default_unit = 'All';
+      this.default_days = 7;
+      this.default_unit = 'All';
 
-      // this.showPaging(result.result.pagedNotNested, pageNumber);
+      this.showPaging(result.result.pagedNotNested, pageNumber);
 
-      this._usageService
-        .getDayUsage(7).pipe(
-          finalize(() => {
-            finishedCallback();
-          })
-        ).subscribe((result_day: any) => {
-          this.buildings = [...new Set(result_day.result.nested.map(item => item.building))];
-          this.buildings.unshift('All');
-          this.units = [...new Set(result_day.result.nested.map(item => item.name))];
-          this.units.sort(Mods.Compare);
-          this.units.unshift('All');
-          this.usage = JSON.stringify(result_day.result.nested);
-          this.single = result_day.result.nested;
-          this.forExcel = result_day.result.notNested;
+      // this._usageService
+      //   .getDayUsage(7).pipe(
+      //     finalize(() => {
+      //       finishedCallback();
+      //     })
+      //   ).subscribe((result_day: any) => {
+      //     this.buildings = [...new Set(result_day.result.nested.map(item => item.building))];
+      //     this.buildings.unshift('All');
+      //     this.units = [...new Set(result_day.result.nested.map(item => item.name))];
+      //     this.units.sort(Mods.Compare);
+      //     this.units.unshift('All');
+      //     this.usage = JSON.stringify(result_day.result.nested);
+      //     this.single = result_day.result.nested;
+      //     this.forExcel = result_day.result.notNested;
 
-          this.default_days = 7;
-          this.default_unit = 'All';
+      //     this.default_days = 7;
+      //     this.default_unit = 'All';
 
-          this.showPaging(result.result.pagedNotNested, pageNumber);
-        });
+      //     this.showPaging(result.result.pagedNotNested, pageNumber);
+      //   });
     });
     
   }
