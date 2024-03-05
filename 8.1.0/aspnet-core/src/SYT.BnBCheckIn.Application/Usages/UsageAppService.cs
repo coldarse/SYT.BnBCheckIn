@@ -235,7 +235,7 @@ namespace SYT.BnBCheckIn.Usages
                         allDays.Add(startDate.AddDays(g));
                     }
 
-                    foreach (var t in tempByDate)
+                    foreach (var t in tempByDate.ToList())
                     {
                         var contains = allDays.Any(x => x.Date.DayOfYear.Equals(t.StartTime.Date.DayOfYear));
 
@@ -258,7 +258,7 @@ namespace SYT.BnBCheckIn.Usages
                     tempByDate = tempByDate.OrderBy(x => x.StartTime).ToList();
 
                     int unitindex = units.FindIndex(x => x.Name == v.Unit);
-                    foreach (var u in tempByDate)
+                    foreach (var u in tempByDate.ToList())
                     {
                         units[unitindex].Series.Add(new DayUsage
                         {
@@ -273,6 +273,7 @@ namespace SYT.BnBCheckIn.Usages
                             units[unitindex].Building = u.Building;
                         }
                     }
+
                 }
 
                 double totalDuration = 0;
@@ -319,7 +320,7 @@ namespace SYT.BnBCheckIn.Usages
                 };
 
             }
-            catch
+            catch (Exception ex)
             {
                 return new UsageDataTable();
             }
