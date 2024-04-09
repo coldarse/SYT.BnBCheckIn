@@ -8,13 +8,13 @@ namespace SYT.BnBCheckIn.EntityFrameworkCore
     {
         public static void Configure(DbContextOptionsBuilder<BnBCheckInDbContext> builder, string connectionString)
         {
-            var serverVersion = new MySqlServerVersion(new Version(8, 0, 31));
+            var serverVersion = ServerVersion.AutoDetect(connectionString);
             builder.UseMySql(connectionString, serverVersion);
         }
 
         public static void Configure(DbContextOptionsBuilder<BnBCheckInDbContext> builder, DbConnection connection)
         {
-            var serverVersion = new MySqlServerVersion(new Version(8, 0, 31));
+            var serverVersion = ServerVersion.AutoDetect(connection.ConnectionString);
             builder.UseMySql(connection, serverVersion);
         }
     }

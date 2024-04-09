@@ -6,7 +6,7 @@ import { UsageDto } from '@shared/service-proxies/usages/model'
 import { UsageService } from '@shared/service-proxies/usages/usage.service'
 import { CreateUpdateUsageComponent } from '../usages/create-update-usage/create-update-usage.component'
 import * as XLSX from 'xlsx';
-import * as moment from 'moment'; 
+import * as moment from 'moment';
 import * as shape from 'd3-shape';
 import { Mods } from '@app/helper/Mods';
 
@@ -65,7 +65,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
   selectedSeconds = false;
 
   minDate = '';
-  
+
   noOfDays = [
     {
       value: 7,
@@ -222,7 +222,7 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       //     this.showPaging(result.result.pagedNotNested, pageNumber);
       //   });
     });
-    
+
   }
 
   hideShowChart(){
@@ -237,15 +237,17 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
       this.arrayForExcel = tempArr.filter((obj: any) => {
         return obj.unit === this.unitForExcel;
       });
-      fileName = `${this.unitForExcel}_last_${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
+      // fileName = `${this.unitForExcel}_last_${this.filename}_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
+      fileName = `${this.unitForExcel}_${this.startTime}_${this.endTime}${this.EXCEL_EXTENSION}`;
     }
     else{
       this.arrayForExcel = JSON.parse(this.forExcel);
-      fileName = `${this.filename}_last_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
+      // fileName = `${this.filename}_last_${this.days}_days_${date.format("YYYY-MM-DD")}${this.EXCEL_EXTENSION}`
+      fileName = `${this.filename}_${this.startTime}_${this.endTime}${this.EXCEL_EXTENSION}`;
     }
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.arrayForExcel);
-    const workbook: XLSX.WorkBook = XLSX.utils.book_new(); 
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
     // save to file
     XLSX.utils.book_append_sheet(workbook, ws, 'Sheet1');
     XLSX.writeFile(workbook, fileName);
@@ -329,5 +331,5 @@ export class UsagesComponent extends PagedListingComponentBase<UsageDto> {
     }
   }
 
-  
+
 }
